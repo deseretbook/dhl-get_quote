@@ -270,6 +270,7 @@ describe Dhl::GetQuote do
         :validate! => nil
       )
       subject.pieces << piece
+      subject.stub(:validate_pieces!)
 
       correct_response = <<eos
 <?xml version="1.0" encoding="UTF-8"?>

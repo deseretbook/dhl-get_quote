@@ -103,7 +103,7 @@ protected
 
   def validate_pieces!
     pieces.each do |piece|
-      klass = "Dhl::GetQuote::Piece"
+      klass_name = "Dhl::GetQuote::Piece"
       if piece.class.to_s != klass_name
         raise Dhl::GetQuote::PieceError, "entry in #pieces is not a #{klass_name} object!"
       end
