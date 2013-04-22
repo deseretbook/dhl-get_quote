@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'dhl/get_quote/get_quote'
+require 'dhl/get_quote/request'
 require "dhl/get_quote/errors"
 
 describe Dhl::GetQuote do
@@ -11,24 +11,26 @@ describe Dhl::GetQuote do
     }
   end
 
+  let(:klass) { Dhl::GetQuote::Request }
+
   subject do
-    Dhl::GetQuote.new(valid_params)
+    klass.new(valid_params)
   end
 
   describe ".new" do
     it "must return an instance of Dhl::GetQuote" do
-      Dhl::GetQuote.new(valid_params).must be_an_instance_of(Dhl::GetQuote)
+      klass.new(valid_params).must be_an_instance_of(Dhl::GetQuote::Request)
     end
 
     it "must throw an error if a site id is not passed" do
       lambda do
-        Dhl::GetQuote.new(valid_params.merge(:site_id => nil))
+        klass.new(valid_params.merge(:site_id => nil))
       end.must raise_exception(Dhl::GetQuote::OptionsError)
     end
 
     it "must throw an error if a password is not passed" do
       lambda do
-        Dhl::GetQuote.new(valid_params.merge(:password => nil))
+        klass.new(valid_params.merge(:password => nil))
       end.must raise_exception(Dhl::GetQuote::OptionsError)
     end
   end

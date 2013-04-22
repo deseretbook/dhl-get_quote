@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'httparty'
-class Dhl::GetQuote
+class Dhl::GetQuote::Request
   attr_reader :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
   attr_accessor :pieces
 
@@ -8,8 +8,8 @@ class Dhl::GetQuote
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
 
   def initialize(options={})
-    raise OptionsError, ":site_id is a required option" unless options[:site_id]
-    raise OptionsError, ":password is a required option" unless options[:password]
+    raise Dhl::GetQuote::OptionsError, ":site_id is a required option" unless options[:site_id]
+    raise Dhl::GetQuote::OptionsError, ":password is a required option" unless options[:password]
   end
 
   def from(country_code, postal_code)
@@ -88,7 +88,7 @@ protected
 
   def validate_country_code!(country_code)
     unless country_code =~ /^[A-Z]{2}$/
-      raise CountryCodeError, 'country code must be upper-case, two letters (A-Z)'
+      raise Dhl::GetQuote::CountryCodeError, 'country code must be upper-case, two letters (A-Z)'
     end
   end
 end
