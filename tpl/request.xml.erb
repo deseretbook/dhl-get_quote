@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:DCTRequest xmlns:p="http://www.dhl.com" xmlns:p1="http://www.dhl.com/datatypes" xmlns:p2="http://www.dhl.com/DCTRequestdatatypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com DCT-req.xsd ">
+    <GetQuote>
+        <Request>
+            <ServiceHeader>
+                <SiteID><%= @site_id %></SiteID>
+                <Password><%= @password %></Password>
+            </ServiceHeader>
+        </Request>
+        <From>
+            <CountryCode><%= @from_country_code %></CountryCode>
+            <Postalcode><%= @from_postal_code %></Postalcode>
+        </From>
+        <BkgDetails>
+            <PaymentCountryCode><%= @from_country_code %></PaymentCountryCode>
+            <Date><%= Time.now.strftime("%Y-%m-%d") %></Date>
+            <ReadyTime><%= ready_time %></ReadyTime>
+            <ReadyTimeGMTOffset>+00:00</ReadyTimeGMTOffset>
+            <DimensionUnit><%= dimensions_unit %></DimensionUnit>
+            <WeightUnit><%= weight_unit %></WeightUnit>
+            <Pieces>
+                <% pieces.each do |piece| %><%= piece.to_xml %><% end %>
+            </Pieces>
+            <IsDutiable><%= dutiable? ? "Y" : "N" %></IsDutiable>
+        </BkgDetails>
+        <To>
+            <CountryCode><%= @to_country_code %></CountryCode>
+            <Postalcode><%= @to_postal_code %></Postalcode>
+        </To>
+    </GetQuote>
+</p:DCTRequest>

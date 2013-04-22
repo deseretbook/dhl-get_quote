@@ -1,15 +1,21 @@
 require 'rubygems'
-require 'httparty'
+# require 'httparty'
+require 'erb'
 class Dhl::GetQuote::Request
-  attr_reader :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
+  attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
   attr_accessor :pieces
 
   DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
 
+  XML_TEMPLATE_PATH = "tpl/request.xml.erb"
+
   def initialize(options={})
-    raise Dhl::GetQuote::OptionsError, ":site_id is a required option" unless options[:site_id]
-    raise Dhl::GetQuote::OptionsError, ":password is a required option" unless options[:password]
+    [ :site_id, :password ].each do |req|
+      raise Dhl::GetQuote::OptionsError, ":#{req} is a required option" unless options[req]
+      instance_variable_set("@#{req}", options[req])
+    end
+    @pieces = []
   end
 
   def from(country_code, postal_code)
@@ -84,7 +90,25 @@ class Dhl::GetQuote::Request
   end
   alias :kilogrammes? :kilograms?
 
+  def to_xml
+    validate_pieces!
+    ERB.new(File.new(XML_TEMPLATE_PATH).read).result(binding)
+  end
+
+  def ready_time(time=Time.now)
+    time.strftime("PT%HH%MM")
+  end
+
 protected
+
+  def validate_pieces!
+    pieces.each do |piece|
+      klass = "Dhl::GetQuote::Piece"
+      if piece.class.to_s != klass_name
+        raise Dhl::GetQuote::PieceError, "entry in #pieces is not a #{klass_name} object!"
+      end
+    end
+  end
 
   def validate_country_code!(country_code)
     unless country_code =~ /^[A-Z]{2}$/

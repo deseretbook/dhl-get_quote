@@ -17,9 +17,9 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency 'httparty', '~>0.10.2'
-  gem.add_dependency 'multi_xml', '~>0.5.3'
-  gem.add_dependency 'builder', '~> 2.0'
+  # gem.add_dependency 'httparty', '~>0.10.2'
+  # gem.add_dependency 'multi_xml', '~>0.5.3'
+  # gem.add_dependency 'builder', '~> 2.0'
 
   gem.add_development_dependency 'rake', '10.0.4'
   gem.add_development_dependency 'rspec', '2.13.0'
