@@ -2,6 +2,7 @@ require 'rubygems'
 require 'httparty'
 class DhlShipping
   attr_reader :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
+  attr_accessor :pieces
 
   DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }

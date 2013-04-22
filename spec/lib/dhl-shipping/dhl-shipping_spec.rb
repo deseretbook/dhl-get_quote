@@ -250,6 +250,4 @@ describe DhlShipping do
     end
   end
 
-
-
 end
