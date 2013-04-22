@@ -1,5 +1,5 @@
 require 'rubygems'
-# require 'httparty'
+require 'httparty'
 require 'erb'
 class Dhl::GetQuote::Request
   attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
@@ -91,7 +91,7 @@ class Dhl::GetQuote::Request
   alias :kilogrammes? :kilograms?
 
   def to_xml
-    validate_pieces!
+    validate!
     ERB.new(File.new(XML_TEMPLATE_PATH).read).result(binding)
   end
 
@@ -99,7 +99,30 @@ class Dhl::GetQuote::Request
     time.strftime("PT%HH%MM")
   end
 
+  def post
+    validate!
+    response = HTTParty.post("https://xmlpitest-ea.dhl.com/XMLShippingServlet",
+      :body => to_xml,
+      :headers => { 'Content-Type' => 'application/xml' }
+    ).response
+    raise response.body
+    # case response.code
+    # when /^2\d+/
+    #   return true
+    # when "401"
+    #   raise Trigonal::InvalidCredentialsError, "Email address and password or key was not accepted"
+    # else
+    #   raise Trigonal::UnknownServerError, "Unknown upstream server (code #{response.code}) occured"
+    # end
+  end
+
 protected
+
+  def validate!
+    raise Dhl::GetQuote::FromNotSetError, "#from() is not set" unless (@from_country_code && @from_postal_code)
+    raise Dhl::GetQuote::ToNotSetError, "#to() is not set" unless (@to_country_code && @to_postal_code)
+    validate_pieces!
+  end
 
   def validate_pieces!
     pieces.each do |piece|

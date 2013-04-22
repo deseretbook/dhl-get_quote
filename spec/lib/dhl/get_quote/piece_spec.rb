@@ -59,10 +59,11 @@ describe Dhl::GetQuote::Piece do
     it "must return an xml string representing the object" do
       subject.to_xml.must == <<eos
 <Piece>
+  <PieceID>1</PieceID>
   <Height>1</Height>
-  <Weight>2</Weight>
-  <Width>3</Width>
   <Depth>4</Depth>
+  <Width>3</Width>
+  <Weight>2</Weight>
 </Piece>
 eos
     end

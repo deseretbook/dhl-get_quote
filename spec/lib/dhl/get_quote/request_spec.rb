@@ -267,10 +267,11 @@ describe Dhl::GetQuote do
           "#{" "*20}<Weight>19</Weight>",
           "#{" "*16}</Piece>"
         ].join("\n"),
-        :validate! => nil
+        :validate! => nil,
+        :piece_id= => nil
       )
       subject.pieces << piece
-      subject.stub(:validate_pieces!)
+      subject.stub(:validate!)
 
       correct_response = <<eos
 <?xml version="1.0" encoding="UTF-8"?>

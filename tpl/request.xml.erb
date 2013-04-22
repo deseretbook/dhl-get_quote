@@ -19,7 +19,7 @@
             <DimensionUnit><%= dimensions_unit %></DimensionUnit>
             <WeightUnit><%= weight_unit %></WeightUnit>
             <Pieces>
-                <% pieces.each do |piece| %><%= piece.to_xml %><% end %>
+                <% pieces.each_with_index do |piece,i| %><%= piece.piece_id = i+1; piece.to_xml %><% end %>
             </Pieces>
             <IsDutiable><%= dutiable? ? "Y" : "N" %></IsDutiable>
         </BkgDetails>

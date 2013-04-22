@@ -1,4 +1,5 @@
 class Dhl::GetQuote::Piece
+  attr_accessor :piece_id
   REQUIRED = [ :height, :weight, :width, :depth ]
   def initialize(options = {})
     REQUIRED.each do |req|
@@ -7,6 +8,7 @@ class Dhl::GetQuote::Piece
       else
         raise Dhl::GetQuote::OptionsError, ":#{req} is a required for Dhl::GetQuote::Piece. Must be nonzero integer."
       end
+      @piece_id = options[:piece_id] || 1
     end
   end
 
@@ -21,10 +23,11 @@ class Dhl::GetQuote::Piece
   def to_xml
 <<eos
 <Piece>
+  <PieceID>#{@piece_id}</PieceID>
   <Height>#{@height}</Height>
-  <Weight>#{@weight}</Weight>
-  <Width>#{@width}</Width>
   <Depth>#{@depth}</Depth>
+  <Width>#{@width}</Width>
+  <Weight>#{@weight}</Weight>
 </Piece>
 eos
   end
