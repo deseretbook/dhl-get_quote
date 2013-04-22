@@ -1,5 +1,5 @@
-module Dhl
-  module Shipping
+class Dhl
+  class GetQuote
     VERSION = "0.0.1"
   end
 end

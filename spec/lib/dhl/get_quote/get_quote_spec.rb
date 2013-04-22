@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'dhl-shipping/dhl-shipping'
-require "dhl-shipping/errors"
+require 'dhl/get_quote/get_quote'
+require "dhl/get_quote/errors"
 
-describe DhlShipping do
+describe Dhl::GetQuote do
 
   let(:valid_params) do
     {
@@ -12,24 +12,24 @@ describe DhlShipping do
   end
 
   subject do
-    DhlShipping.new(valid_params)
+    Dhl::GetQuote.new(valid_params)
   end
 
   describe ".new" do
-    it "must return an instance of DhlShipping" do
-      DhlShipping.new(valid_params).must be_an_instance_of(DhlShipping)
+    it "must return an instance of Dhl::GetQuote" do
+      Dhl::GetQuote.new(valid_params).must be_an_instance_of(Dhl::GetQuote)
     end
 
     it "must throw an error if a site id is not passed" do
       lambda do
-        DhlShipping.new(valid_params.merge(:site_id => nil))
-      end.must raise_exception(DhlShipping::OptionsError)
+        Dhl::GetQuote.new(valid_params.merge(:site_id => nil))
+      end.must raise_exception(Dhl::GetQuote::OptionsError)
     end
 
     it "must throw an error if a password is not passed" do
       lambda do
-        DhlShipping.new(valid_params.merge(:password => nil))
-      end.must raise_exception(DhlShipping::OptionsError)
+        Dhl::GetQuote.new(valid_params.merge(:password => nil))
+      end.must raise_exception(Dhl::GetQuote::OptionsError)
     end
   end
 
@@ -50,17 +50,17 @@ describe DhlShipping do
     it 'must raise error if country code is not 2 letters long' do
       lambda do
         subject.from('DDF', '84111')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
 
       lambda do
         subject.from('D', '84111')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
     end
 
     it 'must raise error if country code is not upper case' do
       lambda do
         subject.from('us', '84111')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
     end
   end
 
@@ -81,17 +81,17 @@ describe DhlShipping do
     it 'must raise error if country code is not 2 letters long' do
       lambda do
         subject.from('DDF', 'T1H 0A1')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
 
       lambda do
         subject.from('D', 'T1H 0A1')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
     end
 
     it 'must raise error if country code is not upper case' do
       lambda do
         subject.from('ca', 'T1H 0A1')
-      end.must raise_exception(DhlShipping::CountryCodeError)
+      end.must raise_exception(Dhl::GetQuote::CountryCodeError)
     end
   end
 

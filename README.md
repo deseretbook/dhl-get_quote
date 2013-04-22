@@ -1,4 +1,4 @@
-# Dhl::Shipping
+# Dhl::GetQuote
 
 TODO: Write a gem description
 
@@ -6,7 +6,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'dhl-shipping'
+    gem 'dhl-get_quote'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install dhl-shipping
+    $ gem install dhl-get_quote
 
 ## Usage
 

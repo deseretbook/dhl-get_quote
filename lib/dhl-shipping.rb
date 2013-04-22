@@ -1,3 +1,3 @@
-require "dhl-shipping/version"
-require "dhl-shipping/errors"
-require "dhl-shipping/dhl-shipping"
+require "dhl/get_quote/version"
+require "dhl/get_quote/errors"
+require "dhl/get_quote/get_quote"

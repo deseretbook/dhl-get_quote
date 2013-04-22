@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'dhl-shipping/version'
+require 'dhl/get_quote/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "dhl-shipping"
-  gem.version       = Dhl::Shipping::VERSION
+  gem.name          = "dhl-get_quote"
+  gem.version       = Dhl::GetQuote::VERSION
   gem.authors       = ["Matthew Nielsen"]
   gem.email         = ["mnielsen@deseretbook.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Get shipping quotes from DHL}
+  gem.summary       = %q{Gem to interface with DHL's XML-PI shipping quote service.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)

@@ -1,1 +1,1 @@
-rvm --create use ruby-1.9.3@dhl-shipping
+rvm --create use ruby-1.9.3@dhl-get_quote
