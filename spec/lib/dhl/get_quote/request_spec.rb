@@ -314,4 +314,40 @@ eos
       subject.to_xml.must == correct_response
     end
   end
+
+  describe "#post" do
+    let(:mock_httparty_response) { mock(:httparty_response) }
+    let(:mock_response_object) { mock(:response_object) }
+    before(:each) do
+      subject.stub(:to_xml).and_return('<xml></xml>')
+      subject.stub!(:validate!)
+      HTTParty.stub!(:post).and_return(
+        mock(:httparty, :response => mock_httparty_response)
+      )
+      Dhl::GetQuote::Response.stub!(:new).and_return(mock_response_object)
+    end
+
+    it "must validate the object" do
+      subject.must_receive(:validate!)
+
+      subject.post
+    end
+
+    it "must post to server" do
+      HTTParty.must_receive(:post).with(
+        Dhl::GetQuote::Request::URLS[:production],
+        {
+          :body => '<xml></xml>',
+          :headers => { 'Content-Type' => 'application/xml' }
+        }
+      )
+
+      subject.post
+    end
+
+    it "must return a new Response object" do
+      subject.post.must == mock_response_object
+    end
+
+  end
 end

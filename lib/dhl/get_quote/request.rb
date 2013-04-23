@@ -5,12 +5,19 @@ class Dhl::GetQuote::Request
   attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
   attr_accessor :pieces
 
+  URLS = {
+    :production => 'https://xmlpi-ea.dhl.com/XMLShippingServlet',
+    :test       => 'https://xmlpitest-ea.dhl.com/XMLShippingServlet'
+  }
+
   DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
 
   XML_TEMPLATE_PATH = "tpl/request.xml.erb"
 
-  def initialize(options={})
+  def initialize(options = {})
+    @test_mode = !!options[:test_mode] || false
+
     [ :site_id, :password ].each do |req|
       raise Dhl::GetQuote::OptionsError, ":#{req} is a required option" unless options[req]
       instance_variable_set("@#{req}", options[req])
@@ -101,22 +108,19 @@ class Dhl::GetQuote::Request
 
   def post
     validate!
-    response = HTTParty.post("https://xmlpitest-ea.dhl.com/XMLShippingServlet",
+    response = HTTParty.post(servlet_url,
       :body => to_xml,
       :headers => { 'Content-Type' => 'application/xml' }
     ).response
-    raise response.body
-    # case response.code
-    # when /^2\d+/
-    #   return true
-    # when "401"
-    #   raise Trigonal::InvalidCredentialsError, "Email address and password or key was not accepted"
-    # else
-    #   raise Trigonal::UnknownServerError, "Unknown upstream server (code #{response.code}) occured"
-    # end
+
+    Dhl::GetQuote::Response.new(response)
   end
 
 protected
+
+  def servlet_url
+    @test_mode ? URLS[:test] : URLS[:production]
+  end
 
   def validate!
     raise Dhl::GetQuote::FromNotSetError, "#from() is not set" unless (@from_country_code && @from_postal_code)
