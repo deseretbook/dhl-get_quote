@@ -5,4 +5,5 @@ class Dhl::GetQuote
   class ToNotSetError < InputError; end
   class CountryCodeError < InputError; end
   class PieceError < InputError; end
+  class InvalidResponseXML < InputError; end
 end

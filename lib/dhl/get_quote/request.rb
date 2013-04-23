@@ -113,7 +113,7 @@ class Dhl::GetQuote::Request
       :headers => { 'Content-Type' => 'application/xml' }
     ).response
 
-    Dhl::GetQuote::Response.new(response)
+    Dhl::GetQuote::Response.new(response.body)
   end
 
 protected

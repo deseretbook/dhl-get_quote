@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'dhl-get_quote'
 
-describe Dhl::GetQuote do
+describe Dhl::GetQuote::Request do
 
   let(:valid_params) do
     {
@@ -316,7 +316,9 @@ eos
   end
 
   describe "#post" do
-    let(:mock_httparty_response) { mock(:httparty_response) }
+    let(:mock_httparty_response) do
+      mock(:httparty_response, :body => nil)
+    end
     let(:mock_response_object) { mock(:response_object) }
     before(:each) do
       subject.stub(:to_xml).and_return('<xml></xml>')
