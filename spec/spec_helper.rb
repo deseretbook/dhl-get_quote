@@ -129,3 +129,39 @@ def valid_dhl_response
   </GetQuoteResponse>
 </res:DCTResponse>'
 end
+
+def incorrect_site_id_response
+  '<?xml version="1.0" encoding="UTF-8"?><res:ErrorResponse xmlns:res="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation= "http://www.dhl.com err-res.xsd">
+    <Response>
+        <ServiceHeader>
+            <MessageTime>2013-04-23T21:59:57+01:00</MessageTime>
+            <SiteID>SomeSiteId</SiteID>
+            <Password>SomeSiteId</Password>
+        </ServiceHeader>
+        <Status>
+            <ActionStatus>Error</ActionStatus>
+            <Condition>
+                <ConditionCode>100</ConditionCode>
+                <ConditionData>Validation Failure:Site Id is wrong</ConditionData>
+            </Condition>
+        </Status>
+    </Response></res:ErrorResponse>'
+end
+
+def incorrect_password_response
+  '<?xml version="1.0" encoding="UTF-8"?><res:ErrorResponse xmlns:res="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation= "http://www.dhl.com err-res.xsd">
+    <Response>
+        <ServiceHeader>
+            <MessageTime>2013-04-23T22:01:55+01:00</MessageTime>
+            <SiteID>SomeSiteId</SiteID>
+            <Password>SomeSiteId</Password>
+        </ServiceHeader>
+        <Status>
+            <ActionStatus>Error</ActionStatus>
+            <Condition>
+                <ConditionCode>100</ConditionCode>
+                <ConditionData>Validation Failure:Password provided is wrong</ConditionData>
+            </Condition>
+        </Status>
+    </Response></res:ErrorResponse>'
+end

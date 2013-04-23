@@ -60,6 +60,39 @@ describe Dhl::GetQuote::Response do
         r.raw_xml.must == invalid_xml
       end
 
+    end
+
+    context "invalid site id" do
+      let(:r) { klass.new(incorrect_site_id_response) }
+
+      it "must return a valid object" do
+        r.must be_an_instance_of(klass)
+      end
+
+      it "must indicate an error" do
+        r.error?.must be_true
+      end
+
+      it "must set the error value appropriately" do
+        r.error.must be_an_instance_of Dhl::GetQuote::Upstream::ValidationFailureError
+      end
+
+    end
+
+    context "invalid password" do
+      let(:r) { klass.new(incorrect_password_response) }
+
+      it "must return a valid object" do
+        r.must be_an_instance_of(klass)
+      end
+
+      it "must indicate an error" do
+        r.error?.must be_true
+      end
+
+      it "must set the error value appropriately" do
+        r.error.must be_an_instance_of Dhl::GetQuote::Upstream::ValidationFailureError
+      end
 
     end
 

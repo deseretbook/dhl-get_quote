@@ -18,9 +18,20 @@ class Dhl::GetQuote::Response
     @raw_xml = xml
     begin
       @parsed_xml = MultiXml.parse(xml)
-      load_costs(DEFAULT_CURRENCY_ROLE_TYPE_CODE)
     rescue MultiXml::ParseError => e
       @error = e
+      return self
+    end
+
+    if response_indicates_error?
+      @error = case response_error_condition_code.to_s
+      when "100"
+        Dhl::GetQuote::Upstream::ValidationFailureError.new(response_error_condition_data)
+      else
+        Dhl::GetQuote::Upstream::UnknownError.new(response_error_condition_data)
+      end
+    else
+      load_costs(DEFAULT_CURRENCY_ROLE_TYPE_CODE)
     end
   end
 
@@ -29,7 +40,7 @@ class Dhl::GetQuote::Response
   end
 
   def load_costs(currency_role_type_code=DEFAULT_CURRENCY_ROLE_TYPE_CODE)
-    validate_currency_role_type_code!
+    validate_currency_role_type_code!(currency_role_type_code)
 
     return if error?
     qtd_s_in_ad_cur = @parsed_xml["DCTResponse"]["GetQuoteResponse"]["BkgDetails"]["QtdShp"]["QtdSInAdCur"]
@@ -51,5 +62,21 @@ class Dhl::GetQuote::Response
       raise Dhl::GetQuote::OptionsError,
         "'#{currency_role_type_code}' is not one of #{CURRENCY_ROLE_TYPE_CODES.join(', ')}"
     end
+  end
+
+  def response_indicates_error?
+    @parsed_xml.keys.include?('ErrorResponse')
+  end
+
+  def response_error_status_condition
+    @response_error_status_condition ||= @parsed_xml['ErrorResponse']['Response']['Status']['Condition']
+  end
+
+  def response_error_condition_code
+    @response_error_condition_code ||= response_error_status_condition['ConditionCode']
+  end
+
+  def response_error_condition_data
+    @response_error_condition_data ||= response_error_status_condition['ConditionData']
   end
 end
