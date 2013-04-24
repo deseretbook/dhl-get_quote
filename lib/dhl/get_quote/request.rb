@@ -30,6 +30,10 @@ class Dhl::GetQuote::Request
     @pieces = []
   end
 
+  def test_mode?
+    !!@test_mode
+  end
+
   def test_mode!
     @test_mode = true
   end
@@ -146,7 +150,7 @@ class Dhl::GetQuote::Request
 protected
 
   def servlet_url
-    @test_mode ? URLS[:test] : URLS[:production]
+    test_mode? ? URLS[:test] : URLS[:production]
   end
 
   def validate!
