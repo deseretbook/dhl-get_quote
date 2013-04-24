@@ -14,6 +14,10 @@ class Dhl::GetQuote::MarketService
     @local_service_type || @local_product_code
   end
 
+  def name
+    @local_service_type_name || @local_product_name
+  end
+
 protected
 
   def build_from_xml(xml_string)

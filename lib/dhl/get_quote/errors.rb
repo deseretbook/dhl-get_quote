@@ -5,7 +5,6 @@ class Dhl::GetQuote
   class ToNotSetError < InputError; end
   class CountryCodeError < InputError; end
   class PieceError < InputError; end
-  class InvalidCredentialsError < InputError; end
 
   class Upstream < StandardError
     class UnknownError < Upstream; end
