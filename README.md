@@ -255,7 +255,7 @@ If you need data from the response that is not exposed by this gem, you can acce
   response.parsed_xml # xml parsed in to a Hash for easy traversal
 ```
 
-#parsed\_xml() is not always available in the case of errors. #raw\_xml() is, except in cases of network transport errors.
+\#parsed\_xml() is not always available in the case of errors. #raw\_xml() is, except in cases of network transport errors.
 
 #### Accessing offered services
 
