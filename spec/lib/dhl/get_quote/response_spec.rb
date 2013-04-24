@@ -131,7 +131,7 @@ describe Dhl::GetQuote::Response do
     subject { klass.new(mkt_srv_response) }
 
     it "must return a list of only offered services (MrkSrvInd=Y or TransInd=Y) as MarketService objects" do
-      subject.offered_services.must == %w[ AB D GG II QA SA TA ]
+      subject.offered_services.map(&:code).must == %w[ AB D GG II QA SA TA ]
     end
   end
 
@@ -140,7 +140,7 @@ describe Dhl::GetQuote::Response do
     subject { klass.new(mkt_srv_response) }
 
     it "must return a list of all services regardless of offer type (MrkSrvInd = N/Y) as MarketService objects" do
-      subject.all_services.must == %w[ AB AD D FF GG II JA OB OO PA PC PX QA SA TA ]
+      subject.all_services.map(&:code).must == %w[ AB AD D FF GG II JA OB OO PA PC PX QA SA TA ]
     end
   end
 end

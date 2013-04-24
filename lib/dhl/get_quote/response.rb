@@ -1,4 +1,6 @@
 class Dhl::GetQuote::Response
+  include Dhl::GetQuote::Helper
+
   attr_reader :raw_xml, :parsed_xml, :error
   attr_reader :currency_code, :currency_role_type_code, :weight_charge, :total_amount, :total_tax_amount, :weight_charge_tax
 
@@ -51,9 +53,7 @@ class Dhl::GetQuote::Response
     end
 
     pricing.each do |k,v|
-      if ivn = PRICING_TRANSLATION[k]
-        instance_variable_set("@#{ivn}", v)
-      end
+      instance_variable_set("@#{underscore(k)}".to_sym, v)
     end
   end
 
@@ -67,11 +67,15 @@ class Dhl::GetQuote::Response
   def offered_services
     market_services.select do
       |m| m['TransInd'].to_s == "Y" || m['MrkSrvInd'].to_s == "Y"
-    end.map{|m| m['LocalServiceType'] || m['LocalProductCode']}.sort
+    end.map do |m|
+      Dhl::GetQuote::MarketService.new(m)
+    end.sort{|a,b| a.code <=> b.code }
   end
 
   def all_services
-    market_services.map{|m| m['LocalServiceType'] || m['LocalProductCode']}.sort
+    market_services.map do |m|
+      Dhl::GetQuote::MarketService.new(m)
+    end.sort{|a,b| a.code <=> b.code }
   end
 
 protected
@@ -95,4 +99,5 @@ protected
   def market_services
     @market_services ||= @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Srvs"]["Srv"]["MrkSrv"]
   end
+
 end
