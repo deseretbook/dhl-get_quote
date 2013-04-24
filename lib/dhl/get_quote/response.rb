@@ -4,15 +4,6 @@ class Dhl::GetQuote::Response
   attr_reader :raw_xml, :parsed_xml, :error
   attr_reader :currency_code, :currency_role_type_code, :weight_charge, :total_amount, :total_tax_amount, :weight_charge_tax
 
-  PRICING_TRANSLATION = {
-    'CurrencyCode' => :currency_code,
-    'CurrencyRoleTypeCode' => :currency_role_type_code,
-    'WeightCharge' => :weight_charge,
-    'TotalAmount' => :total_amount,
-    'TotalTaxAmount' => :total_tax_amount,
-    'WeightChargeTax' => :weight_charge_tax
-  }
-
   CURRENCY_ROLE_TYPE_CODES = %w[ BILLC PULCL BASEC INVCU ]
   DEFAULT_CURRENCY_ROLE_TYPE_CODE = 'BILLC'
 
