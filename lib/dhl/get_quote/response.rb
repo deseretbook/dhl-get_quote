@@ -64,6 +64,18 @@ class Dhl::GetQuote::Response
     end
   end
 
+  def offered_services
+    market_services.select do
+      |m| m['TransInd'].to_s == "Y" || m['MrkSrvInd'].to_s == "Y"
+    end.map{|m| m['LocalServiceType'] || m['LocalProductCode']}.sort
+  end
+
+  def all_services
+    market_services.map{|m| m['LocalServiceType'] || m['LocalProductCode']}.sort
+  end
+
+protected
+
   def response_indicates_error?
     @parsed_xml.keys.include?('ErrorResponse')
   end
@@ -78,5 +90,9 @@ class Dhl::GetQuote::Response
 
   def response_error_condition_data
     @response_error_condition_data ||= response_error_status_condition['ConditionData']
+  end
+
+  def market_services
+    @market_services ||= @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Srvs"]["Srv"]["MrkSrv"]
   end
 end

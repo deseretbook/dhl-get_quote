@@ -113,7 +113,7 @@ describe Dhl::GetQuote::Response do
   end
 
   describe "#load_costs" do
-    it "should load the costs with the associated currency_role_type_code" do
+    it "must load the costs with the associated currency_role_type_code" do
       subject.load_costs("BILLC")
 
       # references values from spec_helper#valid_dhl_response
@@ -123,6 +123,24 @@ describe Dhl::GetQuote::Response do
       subject.total_amount.must == "283.980"
       subject.total_tax_amount == "0.000"
       subject.weight_charge_tax == "0.000"
+    end
+  end
+
+  describe "#offered_services" do
+
+    subject { klass.new(mkt_srv_response) }
+
+    it "must return a list of only offered services (MrkSrvInd=Y or TransInd=Y) as MarketService objects" do
+      subject.offered_services.must == %w[ AB D GG II QA SA TA ]
+    end
+  end
+
+  describe "#all_services" do
+
+    subject { klass.new(mkt_srv_response) }
+
+    it "must return a list of all services regardless of offer type (MrkSrvInd = N/Y) as MarketService objects" do
+      subject.all_services.must == %w[ AB AD D FF GG II JA OB OO PA PC PX QA SA TA ]
     end
   end
 end
