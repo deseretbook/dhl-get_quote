@@ -22,11 +22,13 @@
                 <% pieces.each_with_index do |piece,i| %><%= piece.piece_id = i+1; piece.to_xml %><% end %>
             </Pieces>
             <IsDutiable><%= dutiable? ? "Y" : "N" %></IsDutiable>
-            <% if @special_service_type -%>
+            <% if special_services.size>0 -%>
                 <QtdShp>
-                    <QtdShpExChrg>
-                        <SpecialServiceType><%= @special_service_type %></SpecialServiceType>
-                    </QtdShpExChrg>
+                    <% special_services.each do |special_service_type_code| -%>
+                        <QtdShpExChrg>
+                            <SpecialServiceType><%= special_service_type_code %></SpecialServiceType>
+                        </QtdShpExChrg>
+                     <% end -%>
                 </QtdShp>
             <% end -%>
         </BkgDetails>

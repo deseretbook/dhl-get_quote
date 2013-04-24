@@ -323,14 +323,38 @@ eos
       xml_output.must == correct_response
     end
 
-    context "special_service_type is specified" do
-      before(:each) { subject.special_service_type = "D" }
+    context "one special service is specified" do
+
+      before(:each) { subject.add_special_service("D") }
+
       it "must add SpecialServiceType tags to XML" do
         sst_xml = "<QtdShp>
       <QtdShpExChrg>
           <SpecialServiceType>D</SpecialServiceType>
       </QtdShpExChrg>
   </QtdShp>"
+        xml_output.must =~ /#{(sst_xml.gsub(/^\s+/, ''))}/
+      end
+    end
+
+    context "many special services are specified" do
+
+      before(:each) do
+        subject.add_special_service("D")
+        subject.add_special_service("SA")
+      end
+
+      it "must add SpecialServiceType tags to XML" do
+        sst_xml = <<eos
+<QtdShp>
+<QtdShpExChrg>
+<SpecialServiceType>D</SpecialServiceType>
+</QtdShpExChrg>
+<QtdShpExChrg>
+<SpecialServiceType>SA</SpecialServiceType>
+</QtdShpExChrg>
+</QtdShp>
+eos
         xml_output.must =~ /#{(sst_xml.gsub(/^\s+/, ''))}/
       end
     end
@@ -372,5 +396,55 @@ eos
       subject.post.must == mock_response_object
     end
 
+  end
+
+  describe "#add_special_service" do
+    before(:each) { subject.special_services.must == [] }
+    it "should accept a single string of the special service type code and add it to the list" do
+      subject.add_special_service("D")
+      subject.special_services.must == ["D"] #sanity
+    end
+
+    it "should not add the same service twice" do
+      subject.add_special_service("SA")
+      subject.add_special_service("SA")
+      subject.special_services.must == ["SA"]
+    end
+
+    it "should not add anything if service type code passed is blank" do
+      subject.add_special_service("")
+      subject.special_services.must == []
+    end
+  end
+
+  describe "#remove_special_service" do
+    before(:each) do
+      subject.instance_variable_set(:@special_services_list, Set.new(["D"]))
+    end
+
+    it "should accept a single string of the special service type code and remove it from the list" do
+      subject.remove_special_service("D")
+      subject.special_services.must == [] #sanity
+    end
+
+    it "should throw an error if service to be removed does not exist in list" do
+      subject.remove_special_service("SA")
+      subject.special_services.must == ["D"]
+    end
+
+    it "should not add anything if service type code passed is blank" do
+      subject.remove_special_service("")
+      subject.special_services.must == ["D"]
+    end
+  end
+
+  describe "#special_services" do
+    before(:each) do
+      subject.instance_variable_set(:@special_services_list, Set.new(["D"]))
+    end
+
+    it "must return an array of the special service codes" do
+      subject.special_services.must == ["D"]
+    end
   end
 end

@@ -1,9 +1,11 @@
 require 'rubygems'
 require 'httparty'
 require 'erb'
+require 'set'
+
 class Dhl::GetQuote::Request
   attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
-  attr_accessor :pieces, :special_service_type
+  attr_accessor :pieces
 
   URLS = {
     :production => 'https://xmlpi-ea.dhl.com/XMLShippingServlet',
@@ -23,7 +25,7 @@ class Dhl::GetQuote::Request
       instance_variable_set("@#{req}", options[req])
     end
 
-    @special_service_type = options[:special_service_type]
+    @special_services_list = Set.new
 
     @pieces = []
   end
@@ -125,6 +127,20 @@ class Dhl::GetQuote::Request
     ).response
 
     Dhl::GetQuote::Response.new(response.body)
+  end
+
+  def special_services
+    @special_services_list.to_a.sort
+  end
+
+  def add_special_service(special_service_type)
+    return if special_service_type.to_s.size < 1
+    @special_services_list << special_service_type
+  end
+
+  def remove_special_service(special_service_type)
+    return if special_service_type.to_s.size < 1
+    @special_services_list.delete_if{|x| x == special_service_type}
   end
 
 protected
