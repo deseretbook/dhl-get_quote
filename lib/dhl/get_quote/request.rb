@@ -27,6 +27,8 @@ class Dhl::GetQuote::Request
 
     @special_services_list = Set.new
 
+    @is_dutiable = false
+
     @pieces = []
   end
 
