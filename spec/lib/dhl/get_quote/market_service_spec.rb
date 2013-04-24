@@ -63,4 +63,16 @@ describe Dhl::GetQuote::MarketService do
 
     end
   end
+
+  describe "#code" do
+    it "must return the special service code for a mrksrv" do
+      subject.code.must == "SA"
+    end
+  end
+
+  describe "#name" do
+    it "must return the local name for a mrksrv" do
+      subject.name.must == "DELIVERY SIGNATURE"
+    end
+  end
 end
