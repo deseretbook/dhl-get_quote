@@ -447,4 +447,36 @@ eos
       subject.special_services.must == ["D"]
     end
   end
+
+  describe "#test_mode?" do
+    it "must be false if not in test mode" do
+      subject.instance_variable_set(:@test_mode, false)
+
+      subject.test_mode?.must be_false
+    end
+
+    it "must be false if not in test mode" do
+      subject.instance_variable_set(:@test_mode, true)
+
+      subject.test_mode?.must be_true
+    end
+  end
+
+  describe "#test_mode!" do
+    it "must set test_mode to true" do
+      subject.instance_variable_set(:@test_mode, false)
+
+      subject.test_mode!
+      subject.instance_variable_get(:@test_mode).must be_true
+    end
+  end
+
+  describe "#production_mode!" do
+    it "must set test_mode to false" do
+      subject.instance_variable_set(:@test_mode, true)
+
+      subject.production_mode!
+      subject.instance_variable_get(:@test_mode).must be_false
+    end
+  end
 end
