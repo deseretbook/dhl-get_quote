@@ -252,13 +252,15 @@ describe Dhl::GetQuote::Request do
   end
 
   describe "#to_xml" do
-    it "must return an XML version of the object including Pieces" do
+    before(:each) do
       subject.from('US', 84010)
       subject.to('CA', 'T1H 0A1')
+    end
 
-      time = Time.now
+    let(:time) { Time.now }
 
-      piece = mock(:piece,
+    let(:mock_piece) do
+      mock(:piece,
         :to_xml => [
           "<Piece>",
           "#{" "*20}<Height>20</Height>",
@@ -270,48 +272,67 @@ describe Dhl::GetQuote::Request do
         :validate! => nil,
         :piece_id= => nil
       )
-      subject.pieces << piece
+    end
+
+    # gsub here removes leading whitespace which may be variable.
+    let(:xml_output) { subject.to_xml.gsub(/^\s+/, '') }
+
+    it "must return an XML version of the object including Pieces" do
+
+      subject.pieces << mock_piece
       subject.stub(:validate!)
 
       correct_response = <<eos
 <?xml version="1.0" encoding="UTF-8"?>
 <p:DCTRequest xmlns:p="http://www.dhl.com" xmlns:p1="http://www.dhl.com/datatypes" xmlns:p2="http://www.dhl.com/DCTRequestdatatypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com DCT-req.xsd ">
-    <GetQuote>
-        <Request>
-            <ServiceHeader>
-                <SiteID>SomeId</SiteID>
-                <Password>p4ssw0rd</Password>
-            </ServiceHeader>
-        </Request>
-        <From>
-            <CountryCode>US</CountryCode>
-            <Postalcode>84010</Postalcode>
-        </From>
-        <BkgDetails>
-            <PaymentCountryCode>US</PaymentCountryCode>
-            <Date>#{time.strftime("%Y-%m-%d")}</Date>
-            <ReadyTime>#{subject.ready_time(time)}</ReadyTime>
-            <ReadyTimeGMTOffset>+00:00</ReadyTimeGMTOffset>
-            <DimensionUnit>#{subject.dimensions_unit}</DimensionUnit>
-            <WeightUnit>#{subject.weight_unit}</WeightUnit>
-            <Pieces>
-                <Piece>
-                    <Height>20</Height>
-                    <Depth>20</Depth>
-                    <Width>20</Width>
-                    <Weight>19</Weight>
-                </Piece>
-            </Pieces>
-            <IsDutiable>N</IsDutiable>
-        </BkgDetails>
-        <To>
-            <CountryCode>CA</CountryCode>
-            <Postalcode>T1H 0A1</Postalcode>
-        </To>
-    </GetQuote>
+<GetQuote>
+<Request>
+<ServiceHeader>
+<SiteID>SomeId</SiteID>
+<Password>p4ssw0rd</Password>
+</ServiceHeader>
+</Request>
+<From>
+<CountryCode>US</CountryCode>
+<Postalcode>84010</Postalcode>
+</From>
+<BkgDetails>
+<PaymentCountryCode>US</PaymentCountryCode>
+<Date>#{time.strftime("%Y-%m-%d")}</Date>
+<ReadyTime>#{subject.ready_time(time)}</ReadyTime>
+<ReadyTimeGMTOffset>+00:00</ReadyTimeGMTOffset>
+<DimensionUnit>#{subject.dimensions_unit}</DimensionUnit>
+<WeightUnit>#{subject.weight_unit}</WeightUnit>
+<Pieces>
+<Piece>
+<Height>20</Height>
+<Depth>20</Depth>
+<Width>20</Width>
+<Weight>19</Weight>
+</Piece>
+</Pieces>
+<IsDutiable>N</IsDutiable>
+</BkgDetails>
+<To>
+<CountryCode>CA</CountryCode>
+<Postalcode>T1H 0A1</Postalcode>
+</To>
+</GetQuote>
 </p:DCTRequest>
 eos
-      subject.to_xml.must == correct_response
+      xml_output.must == correct_response
+    end
+
+    context "special_service_type is specified" do
+      before(:each) { subject.special_service_type = "D" }
+      it "must add SpecialServiceType tags to XML" do
+        sst_xml = "<QtdShp>
+      <QtdShpExChrg>
+          <SpecialServiceType>D</SpecialServiceType>
+      </QtdShpExChrg>
+  </QtdShp>"
+        xml_output.must =~ /#{(sst_xml.gsub(/^\s+/, ''))}/
+      end
     end
   end
 

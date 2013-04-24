@@ -3,7 +3,7 @@ require 'httparty'
 require 'erb'
 class Dhl::GetQuote::Request
   attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
-  attr_accessor :pieces
+  attr_accessor :pieces, :special_service_type
 
   URLS = {
     :production => 'https://xmlpi-ea.dhl.com/XMLShippingServlet',
@@ -22,7 +22,18 @@ class Dhl::GetQuote::Request
       raise Dhl::GetQuote::OptionsError, ":#{req} is a required option" unless options[req]
       instance_variable_set("@#{req}", options[req])
     end
+
+    @special_service_type = options[:special_service_type]
+
     @pieces = []
+  end
+
+  def test_mode!
+    @test_mode = true
+  end
+
+  def production_mode!
+    @test_mode = false
   end
 
   def from(country_code, postal_code)
@@ -99,7 +110,7 @@ class Dhl::GetQuote::Request
 
   def to_xml
     validate!
-    ERB.new(File.new(XML_TEMPLATE_PATH).read).result(binding)
+    ERB.new(File.new(XML_TEMPLATE_PATH).read, nil,'%<>-').result(binding)
   end
 
   def ready_time(time=Time.now)
