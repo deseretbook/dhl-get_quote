@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/deseretbook/dhl-get_quote.png)](https://travis-ci.org/deseretbook/dhl-get_quote)
+
 # Dhl::GetQuote
 
 TODO: Write a gem description
