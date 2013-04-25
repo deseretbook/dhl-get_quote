@@ -12,9 +12,6 @@ class Dhl::GetQuote::Request
     :test       => 'https://xmlpitest-ea.dhl.com/XMLShippingServlet'
   }
 
-  DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
-  WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
-
   def initialize(options = {})
     @test_mode = !!options[:test_mode] || Dhl::GetQuote.test_mode?
 
@@ -83,38 +80,38 @@ class Dhl::GetQuote::Request
   end
 
   def centimeters!
-    @dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
+    @dimensions_unit = Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:centimeters]
   end
   alias :centimetres! :centimeters!
 
   def inches!
-    @dimensions_unit = DIMENSIONS_UNIT_CODES[:inches]
+    @dimensions_unit = Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:inches]
   end
 
   def centimeters?
-    dimensions_unit == DIMENSIONS_UNIT_CODES[:centimeters]
+    dimensions_unit == Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:centimeters]
   end
   alias :centimetres? :centimeters?
 
   def inches?
-    dimensions_unit == DIMENSIONS_UNIT_CODES[:inches]
+    dimensions_unit == Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:inches]
   end
 
   def kilograms!
-    @weight_unit = WEIGHT_UNIT_CODES[:kilograms]
+    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:kilograms]
   end
   alias :kilogrammes! :kilograms!
 
   def pounds!
-    @weight_unit = WEIGHT_UNIT_CODES[:pounds]
+    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:pounds]
   end
 
   def pounds?
-    weight_unit == WEIGHT_UNIT_CODES[:pounds]
+    weight_unit == Dhl::GetQuote::WEIGHT_UNIT_CODES[:pounds]
   end
 
   def kilograms?
-    weight_unit == WEIGHT_UNIT_CODES[:kilograms]
+    weight_unit == Dhl::GetQuote::WEIGHT_UNIT_CODES[:kilograms]
   end
   alias :kilogrammes? :kilograms?
 

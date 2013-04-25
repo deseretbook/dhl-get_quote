@@ -8,6 +8,10 @@ require "dhl/get_quote/market_service"
 
 class Dhl
   class GetQuote
+
+    DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
+    WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
+
     def self.configure(&block)
       yield self if block_given?
     end
@@ -41,12 +45,12 @@ class Dhl
     end
 
     def self.kilograms!
-      @@weight_unit = "KG"
+      @@weight_unit = WEIGHT_UNIT_CODES[:kilograms]
     end
     def self.kilogrammes!; self.kilograms!; end
 
     def self.pounds!
-      @@weight_unit = "LB"
+      @@weight_unit = WEIGHT_UNIT_CODES[:pounds]
     end
 
     def self.weight_unit
@@ -54,12 +58,12 @@ class Dhl
     end
 
     def self.centimeters!
-      @@dimensions_unit = "CM"
+      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
     end
     def self.centimetres!; self.centimeters!; end
 
     def self.inches!
-      @@dimensions_unit = "IN"
+      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:inches]
     end
 
     def self.dimensions_unit
