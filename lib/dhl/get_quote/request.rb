@@ -15,8 +15,6 @@ class Dhl::GetQuote::Request
   DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
 
-  XML_TEMPLATE_PATH = "tpl/request.xml.erb"
-
   def initialize(options = {})
     @test_mode = !!options[:test_mode] || false
 
@@ -118,7 +116,7 @@ class Dhl::GetQuote::Request
 
   def to_xml
     validate!
-    ERB.new(File.new(XML_TEMPLATE_PATH).read, nil,'%<>-').result(binding)
+    ERB.new(File.new(xml_template_path).read, nil,'%<>-').result(binding)
   end
 
   def ready_time(time=Time.now)
@@ -174,5 +172,11 @@ protected
     unless country_code =~ /^[A-Z]{2}$/
       raise Dhl::GetQuote::CountryCodeError, 'country code must be upper-case, two letters (A-Z)'
     end
+  end
+
+  def xml_template_path
+    spec = Gem::Specification.find_by_name("dhl-get_quote")
+    gem_root = spec.gem_dir
+    gem_root + "/tpl/request.xml.erb"
   end
 end
