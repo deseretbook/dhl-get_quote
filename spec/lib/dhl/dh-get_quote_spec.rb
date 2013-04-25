@@ -36,8 +36,8 @@ describe Dhl::GetQuote do
           klass.configure { |c| c.test_mode! }
         end
 
-        it "must set the classvar test_mode to true" do
-          klass.class_variable_get(:@@test_mode).must be_true
+        it "must set the class test_mode? to true" do
+          klass.test_mode?.must be_true
         end
 
         it "Dhl::GetQuote::Request must honor this test mode" do
@@ -52,7 +52,7 @@ describe Dhl::GetQuote do
         end
 
         it "must set the classvar test_mode to false" do
-          klass.class_variable_get(:@@test_mode).must be_false
+          klass.test_mode?.must be_false
         end
 
         it "Dhl::GetQuote::Request must honor this test mode" do
