@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["mnielsen@deseretbook.com"]
   gem.description   = %q{Get shipping quotes from DHL}
   gem.summary       = %q{Gem to interface with DHL's XML-PI shipping quote service.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/deseretbook/dhl-get_quote"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
