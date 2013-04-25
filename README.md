@@ -70,6 +70,8 @@ request = Dhl::GetQuote::Request.new(
 )
 ```
 
+*NOTE*: You can also set default beforehand in, for example, an initializer. For more information on this, please see the section "Initializers with Dhl::GetQuote"
+
 #### Package Source and Destination
 
 To set the source and destination, use the #to() and #from() methods:
@@ -307,6 +309,44 @@ The #name() method will return the name for a given service. It will work on bot
   market_service.name # "EXPRESS WORLDWIDE DOC"
 ```
 
+---
+
+### Initializers with Dhl::GetQuote
+
+If you don't want to have to pass email, password, weight setting, etc, every time you build a new request object you can set these defaults beforehand. This works well in cases where you want to put setting in something like a Rails initializer.
+
+To do this, call Dhl::GetQuote::configure and pass a block:
+
+```ruby
+  Dhl::GetQuote::configure do |c|
+
+    c.side_id  "SomeSiteId"
+    c.password "p4ssw0rd"
+
+    c.production_mode! # or test_mode!
+
+    c.kilograms!   # or kilogrammes!
+    c.centimeters! # or centimetres!
+    c.inches!
+    c.pounds!
+
+    c.dutiable! # or not_dutiable!
+
+  end
+```
+
+The above block sets defaults for use thereafter. You would then not have to pass site\_id or password in to Dhl::GetQuote::new():
+
+```ruby
+  Dhl::GetQuote::configure do
+    side_id  "SomeSiteId"
+    password "p4ssw0rd"
+  end
+
+  request = Dhl::GetQuote::new()
+```
+
+*Note*: options passed in to _Dhl::GetQuote::new()_ will override setting in the _Dhl::GetQuote::configure_ block.
 ## Contributing
 
 1. Fork it

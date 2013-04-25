@@ -16,16 +16,20 @@ class Dhl::GetQuote::Request
   WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
 
   def initialize(options = {})
-    @test_mode = !!options[:test_mode] || false
+    @test_mode = !!options[:test_mode] || Dhl::GetQuote.test_mode?
+
+    @site_id = options[:site_id] || Dhl::GetQuote.site_id
+    @password = options[:password] || Dhl::GetQuote.password
 
     [ :site_id, :password ].each do |req|
-      raise Dhl::GetQuote::OptionsError, ":#{req} is a required option" unless options[req]
-      instance_variable_set("@#{req}", options[req])
+      unless instance_variable_get("@#{req}").to_s.size > 0
+        raise Dhl::GetQuote::OptionsError, ":#{req} is a required option"
+      end
     end
 
     @special_services_list = Set.new
 
-    @is_dutiable = false
+    @is_dutiable = Dhl::GetQuote.dutiable?
 
     @pieces = []
   end
@@ -71,11 +75,11 @@ class Dhl::GetQuote::Request
   end
 
   def dimensions_unit
-    @dimensions_unit ||= DIMENSIONS_UNIT_CODES[:centimeters]
+    @dimensions_unit ||= Dhl::GetQuote.dimensions_unit
   end
 
   def weight_unit
-    @weight_unit ||= WEIGHT_UNIT_CODES[:kilograms]
+    @weight_unit ||= Dhl::GetQuote.weight_unit
   end
 
   def centimeters!
