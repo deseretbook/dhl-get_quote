@@ -85,8 +85,8 @@ class Dhl
     def self.set_defaults
       @@site_id = nil
       @@password = nil
-      @@weight_unit = "KG"
-      @@dimensions_unit = "CM"
+      @@weight_unit = WEIGHT_UNIT_CODES[:kilograms]
+      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
       @@dutiable = false
       @@test_mode = false
     end
