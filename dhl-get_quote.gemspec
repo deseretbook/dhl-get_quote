@@ -6,7 +6,7 @@ require 'dhl/get_quote/version'
 Gem::Specification.new do |gem|
   gem.name          = "dhl-get_quote"
   gem.version       = Dhl::GetQuote::VERSION
-  gem.authors       = ["Matthew Nielsen"]
+  gem.authors       = ["Deseret Book", "Matthew Nielsen"]
   gem.email         = ["mnielsen@deseretbook.com"]
   gem.description   = %q{Get shipping quotes from DHL}
   gem.summary       = %q{Gem to interface with DHL's XML-PI shipping quote service.}

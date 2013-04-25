@@ -1,4 +1,4 @@
-Copyright (c) 2013 Matthew Nielsen
+Copyright (c) 2013 Deseret Book
 
 MIT License
 
