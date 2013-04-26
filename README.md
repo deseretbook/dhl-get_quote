@@ -338,9 +338,9 @@ To do this, call Dhl::GetQuote::configure and pass a block:
 The above block sets defaults for use thereafter. You would then not have to pass site\_id or password in to Dhl::GetQuote::new():
 
 ```ruby
-  Dhl::GetQuote::configure do
-    side_id  "SomeSiteId"
-    password "p4ssw0rd"
+  Dhl::GetQuote::configure do |c|
+    c.side_id  "SomeSiteId"
+    c.password "p4ssw0rd"
   end
 
   request = Dhl::GetQuote::new()
