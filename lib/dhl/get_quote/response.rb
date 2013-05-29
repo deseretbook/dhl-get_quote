@@ -36,7 +36,10 @@ class Dhl::GetQuote::Response
     validate_currency_role_type_code!(currency_role_type_code)
 
     return if error?
-    qtd_s_in_ad_cur = @parsed_xml["DCTResponse"]["GetQuoteResponse"]["BkgDetails"]["QtdShp"]["QtdSInAdCur"]
+
+    qtd_shp = [ @parsed_xml["DCTResponse"]["GetQuoteResponse"]["BkgDetails"]["QtdShp"] ].flatten
+    qtd_s_in_ad_cur = qtd_shp.detect{|q|q["TransInd"] == "Y"}["QtdSInAdCur"]
+
     pricing = if x = qtd_s_in_ad_cur.detect{|q|q["CurrencyRoleTypeCode"]==currency_role_type_code}
       x
     else
