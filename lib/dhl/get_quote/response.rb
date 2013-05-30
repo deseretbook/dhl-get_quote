@@ -97,7 +97,7 @@ protected
       if srv.is_a? Array
         srv.each{|aa| a << aa["MrkSrv"]}
       else
-        a << srv
+        a << srv["MrkSrv"]
       end
       a.flatten
     end
