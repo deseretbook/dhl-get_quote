@@ -91,7 +91,17 @@ protected
   end
 
   def market_services
-    @market_services ||= @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Srvs"]["Srv"]["MrkSrv"]
+    @market_services ||= begin
+      srv = @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Srvs"]["Srv"]
+      a = []
+      if srv.is_a? Array
+        srv.each{|aa| a << aa["MrkSrv"]}
+      else
+        a << srv
+      end
+      a.flatten
+    end
+      # @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Srvs"]["Srv"]["MrkSrv"]
   end
 
 end

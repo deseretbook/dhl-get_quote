@@ -46,7 +46,7 @@ Or install it yourself as:
     :depth => 19
   )
 
-  resp = r.post
+  response = r.post
   if response.error?
     raise "There was an error: #{resp.raw_xml}"
   else
@@ -261,7 +261,7 @@ If you need data from the response that is not exposed by this gem, you can acce
 
 #### Accessing offered services
 
-In cases where you have either sent many special service code, or you are evaluating all available services (via the 'OSINFO' special service code), you can obtain a list of all the services with the #offred_services() and #all_services() methods. Both methods return an array of Dhl::GetQuote::MarketService objects.
+In cases where you have either sent many special service code, or you are evaluating all available services (via the 'OSINFO' special service code), you can obtain a list of all the services with the #offered_services() and #all_services() methods. Both methods return an array of Dhl::GetQuote::MarketService objects.
 
 The #offered_services() method returns only those services intended to be shown to the end user an optional services (XCH) they can apply. These would be services with either 'TransInd' or 'MrkSrvInd' set to 'Y'.
 
