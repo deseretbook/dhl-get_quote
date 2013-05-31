@@ -13,7 +13,7 @@
         </From>
         <BkgDetails>
             <PaymentCountryCode><%= @from_country_code %></PaymentCountryCode>
-            <Date><%= Time.now.strftime("%Y-%m-%d") %></Date>
+            <Date><%= ready_date %></Date>
             <ReadyTime><%= ready_time %></ReadyTime>
             <ReadyTimeGMTOffset>+00:00</ReadyTimeGMTOffset>
             <DimensionUnit><%= dimensions_unit %></DimensionUnit>
@@ -36,5 +36,11 @@
             <CountryCode><%= @to_country_code %></CountryCode>
             <Postalcode><%= @to_postal_code %></Postalcode>
         </To>
+        <%- if dutiable? %>
+            <Dutiable>
+                <DeclaredCurrency><%= @duty[:declared_currency] %></DeclaredCurrency>
+                <DeclaredValue><%= @duty[:declared_value] %></DeclaredValue>
+            </Dutiable>
+        <% end %>
     </GetQuote>
 </p:DCTRequest>

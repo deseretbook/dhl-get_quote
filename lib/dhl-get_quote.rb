@@ -1,3 +1,5 @@
+require 'date'
+
 require "dhl/get_quote/version"
 require "dhl/get_quote/helper"
 require "dhl/get_quote/errors"
@@ -68,18 +70,6 @@ class Dhl
 
     def self.dimensions_unit
       @@dimensions_unit
-    end
-
-    def self.dutiable!
-      @@dutiable = true
-    end
-
-    def self.not_dutiable!
-      @@dutiable = false
-    end
-
-    def self.dutiable?
-      !!@@dutiable
     end
 
     def self.set_defaults

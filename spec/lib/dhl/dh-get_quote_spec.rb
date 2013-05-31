@@ -141,36 +141,6 @@ describe Dhl::GetQuote do
         end
       end
 
-      describe ".dutiable!" do
-        before(:each) do
-          klass.configure { |c| c.dutiable! }
-        end
-
-        it "must set the class dutiable to true" do
-          klass.dutiable?.must be_true
-        end
-
-        it "Dhl::GetQuote::Request must honor this test mode" do
-          request = Dhl::GetQuote::Request.new(valid_request_options)
-          request.dutiable?.must be_true
-        end
-      end
-
-      describe ".not_dutiable!" do
-        before(:each) do
-          klass.configure { |c| c.not_dutiable! }
-        end
-
-        it "must set the classvar test_mode to false" do
-          klass.dutiable?.must be_false
-        end
-
-        it "Dhl::GetQuote::Request must honor this test mode" do
-          request = Dhl::GetQuote::Request.new(valid_request_options)
-          request.dutiable?.must be_false
-        end
-      end
-
     end
   end
 

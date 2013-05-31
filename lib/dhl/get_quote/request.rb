@@ -4,7 +4,7 @@ require 'erb'
 require 'set'
 
 class Dhl::GetQuote::Request
-  attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code
+  attr_reader :site_id, :password, :from_country_code, :from_postal_code, :to_country_code, :to_postal_code, :duty
   attr_accessor :pieces
 
   URLS = {
@@ -26,7 +26,7 @@ class Dhl::GetQuote::Request
 
     @special_services_list = Set.new
 
-    @is_dutiable = Dhl::GetQuote.dutiable?
+    @duty = false
 
     @pieces = []
   end
@@ -56,19 +56,19 @@ class Dhl::GetQuote::Request
   end
 
   def dutiable?
-    !!@is_dutiable
+    !!@duty
   end
 
-  def dutiable(val)
-    @is_dutiable = !!val
+  def dutiable!(value, currency_code="USD")
+    @duty = {
+      :declared_value => value.to_f,
+      :declared_currency => currency_code.slice(0,3).upcase
+    }
   end
-
-  def dutiable!
-    dutiable(true)
-  end
+  alias_method :dutiable, :dutiable!
 
   def not_dutiable!
-    dutiable(false)
+    @duty = false
   end
 
   def dimensions_unit
@@ -120,8 +120,23 @@ class Dhl::GetQuote::Request
     ERB.new(File.new(xml_template_path).read, nil,'%<>-').result(binding)
   end
 
+  # ready times are only 8a-5p(17h)
   def ready_time(time=Time.now)
-    time.strftime("PT%HH%MM")
+    if time.hour >= 17 || time.hour < 8
+      time.strftime("PT08H00M")
+    else
+      time.strftime("PT%HH%MM")
+    end
+  end
+
+  # ready dates are only mon-fri
+  def ready_date(t=Time.now)
+    date = Date.parse(t.to_s)
+    if date.wday >= 5 && t.hour >= 17
+      date.next_day(8-date.wday)
+    else
+      date
+    end.strftime("%Y-%m-%d")
   end
 
   def post

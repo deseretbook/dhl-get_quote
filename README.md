@@ -127,18 +127,19 @@ You can also get the value directly:
 
 #### Setting Duty
 
-You can toggle whether or not a shipment is dutiable with the #dutiable!() and #not_dutiable!() methods.
+! Note, this a breaking change from 0.4.x
+
+To set the duty on a shipment, use the dutiable!() method. It accepts the numeric value and an optional currency code. If not specified, the currency code default to US Dollars (USD).
 
 ```ruby
-  request.dutiable!
-  request.not_dutiable!
+  # set the dutiable value at $100 in US Dollars
+  request.dutiable!(100.00, 'USD')
 ```
 
-You can absolutely set the dutiable stage with the #dutiable() method:
+To remove a previously set duty, use the not_dutiable!() method.
 
 ```ruby
-  request.dutiable(true)
-  request.dutiable(false)
+  request.not_dutiable!
 ```
 
 You can query the current state with #dutiable?:

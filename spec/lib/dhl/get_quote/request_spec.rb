@@ -98,12 +98,12 @@ describe Dhl::GetQuote::Request do
 
   describe "#dutiable?" do
     it "must be true if dutiable set to yes" do
-      subject.instance_variable_set(:@is_dutiable, true)
+      subject.dutiable!(1.0, 'USD')
       subject.dutiable?.must be_true
     end
 
     it "must be false if dutiable set to no" do
-      subject.instance_variable_set(:@is_dutiable, false)
+      subject.not_dutiable!
       subject.dutiable?.must be_false
     end
 
@@ -112,30 +112,41 @@ describe Dhl::GetQuote::Request do
     end
   end
 
-  describe "#dutiable" do
-    it "must set dutiable to true if passed a true value" do
-      subject.dutiable(true)
-      subject.dutiable?.must be_true
-    end
-
-    it "must set dutiable to false if passed a false value" do
-      subject.dutiable(false)
-      subject.dutiable?.must be_false
-    end
-  end
-
   describe "#dutiable!" do
-    it "must set dutiable() to true" do
+    it "must accept a value and currency code" do
       subject.dutiable?.must be_false #sanity
 
-      subject.dutiable!
+      subject.dutiable!(1.0, 'CAD')
+
       subject.dutiable?.must be_true
+
+      subject.duty.must be_an_instance_of Hash
+      subject.duty[:declared_currency].must == 'CAD'
+      subject.duty[:declared_value].must == 1.0
+    end
+
+    it "must use USD as the default currency code" do
+      subject.dutiable!(1.0)
+
+      subject.duty[:declared_currency].must == 'USD'
+    end
+
+    it "must upcase and truncate currency codes" do
+      subject.dutiable!(1.0, 'MxPe')
+
+      subject.duty[:declared_currency].must == 'MXP'
+    end
+
+    it "must cast value to float" do
+      subject.dutiable!(1)
+
+      subject.duty[:declared_value].must == 1.0
     end
   end
 
   describe "#not_dutiable!" do
     it "must set dutiable() to false" do
-      subject.instance_variable_set(:@is_dutiable, true)
+      subject.instance_variable_set(:@duty, {})
       subject.dutiable?.must be_true #sanity
 
       subject.not_dutiable!
@@ -255,6 +266,12 @@ describe Dhl::GetQuote::Request do
     before(:each) do
       subject.from('US', 84010)
       subject.to('CA', 'T1H 0A1')
+
+      Timecop.freeze(Time.local(2013, 5, 15, 10, 5, 0))
+    end
+
+    after(:each) do
+      Timecop.return
     end
 
     let(:time) { Time.now }
@@ -477,6 +494,64 @@ eos
 
       subject.production_mode!
       subject.instance_variable_get(:@test_mode).must be_false
+    end
+  end
+
+  describe "#ready_time" do
+    after(:each) do
+      Timecop.return
+    end
+
+    it "should conver the current time into a DHL timestamp" do
+      Timecop.freeze(Time.local(2013, 5, 15, 10, 5, 0))
+
+      subject.ready_time.must == 'PT10H05M'
+    end
+
+    context "the time is after 5pm" do
+      it "should provide a stamp for the 8am" do
+        Timecop.freeze(Time.local(2013, 5, 15, 19, 5, 0))
+
+        subject.ready_time.must == 'PT08H00M'
+      end
+    end
+
+    context "the time is before 8am" do
+      it "should provide a stamp for the 8am" do
+        Timecop.freeze(Time.local(2013, 5, 15, 6, 5, 0))
+
+        subject.ready_time.must == 'PT08H00M'
+      end
+    end
+  end
+
+
+  describe "#ready_date" do
+    after(:each) do
+      Timecop.return
+    end
+
+    it 'should provide an ISO date of the current or next business day' do
+      Timecop.freeze(Time.local(2013, 5, 15, 10, 5, 0))
+
+      subject.ready_date.must == '2013-05-15'
+    end
+
+    context 'the date is friday' do
+      context 'the time is before 5pm' do
+        it 'should return todays date' do
+          Timecop.freeze(Time.local(2013, 5, 31, 10, 4, 0))
+
+          subject.ready_date.must == '2013-05-31'
+        end
+      end
+      context 'the time is after 5pm' do
+        it 'should return todays date' do
+          Timecop.freeze(Time.local(2013, 5, 31, 19, 4, 0))
+
+          subject.ready_date.must == '2013-06-03'
+        end
+      end
     end
   end
 end
