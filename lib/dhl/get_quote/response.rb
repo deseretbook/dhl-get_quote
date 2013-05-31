@@ -23,6 +23,8 @@ class Dhl::GetQuote::Response
       else
         Dhl::GetQuote::Upstream::UnknownError.new(response_error_condition_data)
       end
+    elsif condition_indicates_error?
+      @error = Dhl::GetQuote::Upstream::ConditionError.new(condition_error_code, condition_error_message)
     else
       load_costs(DEFAULT_CURRENCY_ROLE_TYPE_CODE)
     end
@@ -88,6 +90,20 @@ protected
 
   def response_error_condition_data
     @response_error_condition_data ||= response_error_status_condition['ConditionData']
+  end
+
+  def condition_indicates_error?
+    @parsed_xml["DCTResponse"]["GetQuoteResponse"] &&
+      @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Note"] &&
+        @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Note"]["Condition"].is_a?(Hash)
+  end
+
+  def condition_error_code
+    @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Note"]["Condition"]["ConditionCode"]
+  end
+
+  def condition_error_message
+    @parsed_xml["DCTResponse"]["GetQuoteResponse"]["Note"]["Condition"]["ConditionData"].strip
   end
 
   def market_services

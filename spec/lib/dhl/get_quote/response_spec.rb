@@ -96,6 +96,23 @@ describe Dhl::GetQuote::Response do
 
     end
 
+    context "Condition error" do
+      let(:r) { klass.new(conditon_error_response) }
+      it "must return a valid object" do
+        r.must be_an_instance_of(klass)
+      end
+
+      it "must indicater an error" do
+        r.error?.must be_true
+      end
+
+      it "must set the error value appropriately" do
+        r.error.must be_an_instance_of Dhl::GetQuote::Upstream::ConditionError
+        r.error.message.must == "The declared value is missing."
+        r.error.code.must == "5021"
+      end
+    end
+
   end
 
   describe "#error?" do

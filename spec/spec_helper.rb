@@ -506,3 +506,7 @@ def mkt_srv_response
   </GetQuoteResponse>
 </res:DCTResponse>'
 end
+
+def conditon_error_response
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><res:DCTResponse xmlns:res='http://www.dhl.com' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation= 'http://www.dhl.com DCT-Response.xsd'><GetQuoteResponse><Response><ServiceHeader><MessageTime>2013-05-31T22:49:42.138+01:00</MessageTime><SiteID>Desere</SiteID></ServiceHeader></Response><Note><Condition><ConditionCode>5021</ConditionCode><ConditionData>The declared value is missing.                                                                       </ConditionData></Condition></Note></GetQuoteResponse></res:DCTResponse>\n"
+end
