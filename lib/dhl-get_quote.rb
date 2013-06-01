@@ -46,13 +46,25 @@ class Dhl
       end
     end
 
-    def self.kilograms!
+    def self.metic_measurements!
       @@weight_unit = WEIGHT_UNIT_CODES[:kilograms]
+      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
+    end
+
+    def self.us_measurements!
+      @@weight_unit = WEIGHT_UNIT_CODES[:pounds]
+      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:inches]
+    end
+
+    def self.kilograms!
+      deprication_notice(:kilograms!, :metric)
+      metic_measurements!
     end
     def self.kilogrammes!; self.kilograms!; end
 
     def self.pounds!
-      @@weight_unit = WEIGHT_UNIT_CODES[:pounds]
+      deprication_notice(:pounds!, :us)
+      us_measurements!
     end
 
     def self.weight_unit
@@ -60,12 +72,14 @@ class Dhl
     end
 
     def self.centimeters!
-      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
+      deprication_notice(:centimeters!, :metric)
+      metic_measurements!
     end
     def self.centimetres!; self.centimeters!; end
 
     def self.inches!
-      @@dimensions_unit = DIMENSIONS_UNIT_CODES[:inches]
+      deprication_notice(:inches!, :us)
+      us_measurements!
     end
 
     def self.dimensions_unit
@@ -79,6 +93,16 @@ class Dhl
       @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
       @@dutiable = false
       @@test_mode = false
+    end
+
+    private
+
+    def self.deprication_notice(meth, m)
+      messages = {
+        :metric => "Method replaced by Dhl::GetQuote#metic_measurements!(). I am now setting your measurements to metric",
+        :us     => "Method replaced by Dhl::GetQuote#us_measurements!(). I am now setting your measurements to US customary",
+      }
+      puts "!!!! Method \"##{meth}()\" is depricated. #{messages[m.to_sym]}."
     end
   end
 end

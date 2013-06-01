@@ -79,13 +79,33 @@ class Dhl::GetQuote::Request
     @weight_unit ||= Dhl::GetQuote.weight_unit
   end
 
-  def centimeters!
+  def metric_measurements!
+    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:kilograms]
     @dimensions_unit = Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:centimeters]
+  end
+
+  def us_measurements!
+    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:pounds]
+    @dimensions_unit = Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:inches]
+  end
+
+  def centimeters!
+    deprication_notice(:centimeters!, :metric)
+    metric_measurements!
   end
   alias :centimetres! :centimeters!
 
   def inches!
-    @dimensions_unit = Dhl::GetQuote::DIMENSIONS_UNIT_CODES[:inches]
+    deprication_notice(:inches!, :us)
+    us_measurements!
+  end
+
+  def metric_measurements?
+    centimeters? && kilograms?
+  end
+
+  def us_measurements?
+    pounds? && inches?
   end
 
   def centimeters?
@@ -98,12 +118,14 @@ class Dhl::GetQuote::Request
   end
 
   def kilograms!
-    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:kilograms]
+    deprication_notice(:kilograms!, :metric)
+    metric_measurements!
   end
   alias :kilogrammes! :kilograms!
 
   def pounds!
-    @weight_unit = Dhl::GetQuote::WEIGHT_UNIT_CODES[:pounds]
+    deprication_notice(:pounds!, :us)
+    us_measurements!
   end
 
   def pounds?
@@ -194,5 +216,15 @@ protected
     spec = Gem::Specification.find_by_name("dhl-get_quote")
     gem_root = spec.gem_dir
     gem_root + "/tpl/request.xml.erb"
+  end
+
+private
+
+  def deprication_notice(meth, m)
+    messages = {
+      :metric => "Method replaced by Dhl::GetQuote::Request#metic_measurements!(). I am now setting your measurements to metric",
+      :us     => "Method replaced by Dhl::GetQuote::Request#us_measurements!(). I am now setting your measurements to US customary",
+    }
+    puts "!!!! Method \"##{meth}()\" is depricated. #{messages[m.to_sym]}."
   end
 end
