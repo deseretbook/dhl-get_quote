@@ -9,9 +9,9 @@ class Dhl
 This version introduces the following changes from 0.4.x:
 
 * #inches!, #pounds!, #kilograms! and #centimeters have been depricated.
-  Please use #us_measurements! or #metric_measurements.
+  Please use #us_measurements! or #metric_measurements!.
 
-* dutiable! now requires arguments (dutiable value and currency).
+* dutiable() replaces dutiable! now requires arguments (dutiable value and currency).
 
 EOS
   end
