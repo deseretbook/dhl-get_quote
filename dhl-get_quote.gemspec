@@ -27,4 +27,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'timecop', '~> 0.6.1'
   # gem.add_development_dependency 'debugger'
 
+  if Dhl::GetQuote::PostInstallMessage
+    gem.post_install_message = Dhl::GetQuote::PostInstallMessage
+  end
+
 end

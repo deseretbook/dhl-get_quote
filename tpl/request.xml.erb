@@ -21,9 +21,14 @@
             <Pieces>
                 <% pieces.each_with_index do |piece,i| %><%= piece.piece_id = i+1; piece.to_xml %><% end %>
             </Pieces>
+            <% if @payment_account_number -%>
+                <PaymentAccountNumber><%= @payment_account_number %></PaymentAccountNumber>
+            <% end -%>
             <IsDutiable><%= dutiable? ? "Y" : "N" %></IsDutiable>
             <% if special_services.size>0 -%>
                 <QtdShp>
+                    <GlobalProductCode>P</GlobalProductCode>
+            <LocalProductCode>P</LocalProductCode>
                     <% special_services.each do |special_service_type_code| -%>
                         <QtdShpExChrg>
                             <SpecialServiceType><%= special_service_type_code %></SpecialServiceType>

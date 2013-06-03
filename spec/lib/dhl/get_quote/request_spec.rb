@@ -554,4 +554,24 @@ eos
       end
     end
   end
+
+  describe "#payment_account_number" do
+    context "payment account number is passed" do
+      it "must set the pac to be the passed number" do
+        subject.payment_account_number('abc123')
+
+        subject.instance_variable_get(:@payment_account_number).must == 'abc123'
+      end
+    end
+    context "payment account number is not passes" do
+      it "must be nil if no pac is recorded" do
+        subject.payment_account_number.must be_nil
+      end
+      it "must return the pac if one was set previously" do
+        subject.instance_variable_set(:@payment_account_number, '123abc')
+
+        subject.payment_account_number.must == '123abc'
+      end
+    end
+  end
 end

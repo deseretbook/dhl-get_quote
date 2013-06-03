@@ -59,16 +59,24 @@ class Dhl::GetQuote::Request
     !!@duty
   end
 
-  def dutiable!(value, currency_code="USD")
+  def dutiable(value, currency_code="USD")
     @duty = {
       :declared_value => value.to_f,
       :declared_currency => currency_code.slice(0,3).upcase
     }
   end
-  alias_method :dutiable, :dutiable!
+  alias_method :dutiable!, :dutiable
 
   def not_dutiable!
     @duty = false
+  end
+
+  def payment_account_number(pac = nil)
+    if pac.to_s.size > 0
+      @payment_account_number = pac
+    else
+      @payment_account_number
+    end
   end
 
   def dimensions_unit
