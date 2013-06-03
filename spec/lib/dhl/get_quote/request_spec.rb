@@ -63,6 +63,11 @@ describe Dhl::GetQuote::Request do
         subject.from('us', '84111')
       end.must raise_exception(Dhl::GetQuote::CountryCodeError)
     end
+
+    it 'must accept an optional city name' do
+      subject.from('US', '84111', "Bountiful")
+      subject.instance_variable_get(:@from_city_name).must == 'Bountiful'
+    end
   end
 
   describe '#to' do
@@ -93,6 +98,11 @@ describe Dhl::GetQuote::Request do
       lambda do
         subject.from('ca', 'T1H 0A1')
       end.must raise_exception(Dhl::GetQuote::CountryCodeError)
+    end
+
+    it 'must accept an optional city name' do
+      subject.to('US', '84111', "Bountiful")
+      subject.instance_variable_get(:@to_city_name).must == 'Bountiful'
     end
   end
 

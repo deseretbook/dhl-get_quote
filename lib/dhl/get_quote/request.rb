@@ -43,16 +43,18 @@ class Dhl::GetQuote::Request
     @test_mode = false
   end
 
-  def from(country_code, postal_code)
+  def from(country_code, postal_code, city=nil)
     @from_postal_code = postal_code.to_s
     validate_country_code!(country_code)
     @from_country_code = country_code
+    @from_city_name = city
   end
 
-  def to(country_code, postal_code)
+  def to(country_code, postal_code, city=nil)
     @to_postal_code = postal_code.to_s
     validate_country_code!(country_code)
     @to_country_code = country_code
+    @to_city_name = city
   end
 
   def dutiable?

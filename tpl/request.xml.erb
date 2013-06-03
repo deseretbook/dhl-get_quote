@@ -10,6 +10,7 @@
         <From>
             <CountryCode><%= @from_country_code %></CountryCode>
             <Postalcode><%= @from_postal_code %></Postalcode>
+            <% if @from_city_name -%><City><%= @from_city_name %></City><% end -%>
         </From>
         <BkgDetails>
             <PaymentCountryCode><%= @from_country_code %></PaymentCountryCode>
@@ -38,6 +39,7 @@
         <To>
             <CountryCode><%= @to_country_code %></CountryCode>
             <Postalcode><%= @to_postal_code %></Postalcode>
+            <% if @to_city_name -%><City><%= @to_city_name %></City><% end -%>
         </To>
         <%- if dutiable? %>
             <Dutiable>

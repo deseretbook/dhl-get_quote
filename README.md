@@ -6,6 +6,8 @@ Get shipping quotes from DHL's XML-PI Service.
 
 Use of the XML-PI Service requires you to have Site ID and Password from DHL. You can sign up here: https://myaccount.dhl.com/MyAccount/jsp/TermsAndConditionsIndex.htm
 
+Many thanks to John Riff of DHL for his help during the development of this gem.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -31,8 +33,7 @@ Or install it yourself as:
     :test_mode => true # changes the url being hit
   )
 
-  r.kilograms!
-  r.centimeters!
+  r.metric_measurements!
 
   r.add_special_service("DD")
 
@@ -72,19 +73,40 @@ request = Dhl::GetQuote::Request.new(
 
 *NOTE*: You can also set default beforehand in, for example, an initializer. For more information on this, please see the section "Initializers with Dhl::GetQuote"
 
+#### Setting Payment Account Number
+
+If you are using a special account for shipping payments, you can specify it as
+
+```ruby
+  request.payment_account_number('12345678')
+```
+
+To read the current payment account number (if set), use:
+
+```ruby
+  request.payment_accout_number
+```
+
+It will return the current number or nil if none has been set.
+
 #### Package Source and Destination
 
 To set the source and destination, use the #to() and #from() methods:
 
-  #to(_country_code_, _postal_code_), #from(_country_code_, _postal_code_)
+  #to(_country_code_, _postal_code_, city_name), #from(_country_code_, _postal_code_, city_name)
 
-The country code must be the two-letter capitalized ISO country code. The postal code will be cast in to a string.
+The country code must be the two-letter capitalized ISO country code. The postal code will be cast in to a string. City name is optional.
 
 Example:
 
 ```ruby
+  # without city
   request.from('US', 84111)
   request.to('CA', 'T1H 0A1')
+
+  # with city
+  request.from('US', 84111, "Bountiful")
+  request.to('MX', "53950", 'Naucalpan de Juárez')
 ```
 
 #### Measurement Units
@@ -94,28 +116,21 @@ DHL can accept weights and measures in both Metric and US Customary units.  Weig
 To set to US Customary, use:
 
 ```ruby
-  request.inches! # set dimensions to inches
-  request.pounds! # set weight to pounds
+  request.us_measurements! # set dimensions to inches and weight to pounds
 ```
 
 To set back to Metric, use
 
 ```ruby
-  request.centimeters! # set dimensions to centimeters
-  request.centimetres! # alternate spelling
-
-  request.kilograms!   # set weight to kilograms
-  request.kilogrammes! # alternate spelling
+  request.metric_measurements! # set dimensions to centimeters and weight to kilograms
 ```
 
 To query what measurement system the object is currently using, use the following boolean calls:
 
 ```ruby
-  request.inches?
-  request.centimeters? # or request.centimetres?
+  request.us_measurements?
 
-  request.pounds?
-  request.kilograms? # or request.kilogrammes?
+  request.metric_measurements?
 ```
 
 You can also get the value directly:
@@ -129,11 +144,11 @@ You can also get the value directly:
 
 ! Note, this a breaking change from 0.4.x
 
-To set the duty on a shipment, use the dutiable!() method. It accepts the numeric value and an optional currency code. If not specified, the currency code default to US Dollars (USD).
+To set the duty on a shipment, use the dutiable() method. It accepts the numeric value and an optional currency code. If not specified, the currency code default to US Dollars (USD).
 
 ```ruby
   # set the dutiable value at $100 in US Dollars
-  request.dutiable!(100.00, 'USD')
+  request.dutiable(100.00, 'USD')
 ```
 
 To remove a previously set duty, use the not_dutiable!() method.
@@ -326,12 +341,10 @@ To do this, call Dhl::GetQuote::configure and pass a block:
 
     c.production_mode! # or test_mode!
 
-    c.kilograms!   # or kilogrammes!
-    c.centimeters! # or centimetres!
-    c.inches!
-    c.pounds!
+    c.metric_measurements!
+    c.us_measurements!
 
-    c.dutiable! # or not_dutiable!
+    c.dutiable(1.00, 'USD')
 
   end
 ```
