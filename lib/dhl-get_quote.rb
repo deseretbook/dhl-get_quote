@@ -46,7 +46,7 @@ class Dhl
       end
     end
 
-    def self.metic_measurements!
+    def self.metric_measurements!
       @@weight_unit = WEIGHT_UNIT_CODES[:kilograms]
       @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
     end
@@ -58,7 +58,7 @@ class Dhl
 
     def self.kilograms!
       deprication_notice(:kilograms!, :metric)
-      metic_measurements!
+      metric_measurements!
     end
     def self.kilogrammes!; self.kilograms!; end
 
@@ -73,7 +73,7 @@ class Dhl
 
     def self.centimeters!
       deprication_notice(:centimeters!, :metric)
-      metic_measurements!
+      metric_measurements!
     end
     def self.centimetres!; self.centimeters!; end
 

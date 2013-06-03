@@ -178,21 +178,75 @@ describe Dhl::GetQuote::Request do
     end
   end
 
-  describe "#centimeters!" do
-    it "must set the dimensions_unit to centimeters" do
-      subject.instance_variable_set(:@dimensions_unit, nil)
+  describe "#us_measurements!" do
+    it "should set the measurement units to us" do
+      subject.instance_variable_set(:@dimensions_unit, "CM")
+      subject.instance_variable_set(:@weight_unit, "KG")
 
-      subject.centimeters!
+      subject.us_measurements!
+
+      subject.dimensions_unit.must == "IN"
+      subject.weight_unit.must == "LB"
+    end
+  end
+
+  describe "#metric_measurements!" do
+    it "must set the measurement units to metric" do
+      subject.instance_variable_set(:@dimensions_unit, "IN")
+      subject.instance_variable_set(:@weight_unit, "LB")
+
+      subject.metric_measurements!
+
       subject.dimensions_unit.must == "CM"
+      subject.weight_unit.must == "KG"
+    end
+  end
+
+  describe "#metric_measurements?" do
+    it "must be true if measurements are in kg and cm" do
+      subject.metric_measurements!
+
+      subject.metric_measurements?.must be_true
+    end
+
+    it "must be false if measurements are not in kg and cm" do
+      subject.us_measurements!
+
+      subject.metric_measurements?.must be_false
+    end
+  end
+
+  describe "#us_measurements?" do
+    it "must be true if measurements are in ln and in" do
+      subject.us_measurements!
+
+      subject.us_measurements?.must be_true
+    end
+
+    it "must be false if measurements are not in lb and in" do
+      subject.metric_measurements!
+
+      subject.us_measurements?.must be_false
+    end
+  end
+
+  describe "#centimeters!" do
+    # silence deprication notices in tests
+    before(:each) { subject.stub!(:puts) }
+
+    it "must call #metric_measurements!" do
+      subject.must_receive(:metric_measurements!)
+      subject.centimeters!
     end
   end
 
   describe "#inches!" do
-    it "must set the dimensions_unit to inches" do
-      subject.instance_variable_set(:@dimensions_unit, nil)
+    # silence deprication notices in tests
+    before(:each) { subject.stub!(:puts) }
 
+    it "must call #us_measurements!" do
+      subject.must_receive(:us_measurements!)
       subject.inches!
-      subject.dimensions_unit.must == "IN"
     end
   end
 
@@ -221,20 +275,22 @@ describe Dhl::GetQuote::Request do
   end
 
   describe "#kilograms!" do
-    it "must set the weight unit to kilograms" do
-      subject.instance_variable_set(:@weight_unit, nil)
+    # silence deprication notices in tests
+    before(:each) { subject.stub!(:puts) }
 
+    it "must call #metric_measurements!" do
+      subject.must_receive(:metric_measurements!)
       subject.kilograms!
-      subject.weight_unit.must == "KG"
     end
   end
 
   describe "#pounds!" do
-    it "must set the weight unit to pounds" do
-      subject.instance_variable_set(:@weight_unit, nil)
+    # silence deprication notices in tests
+    before(:each) { subject.stub!(:puts) }
 
+    it "must call #us_measurements!" do
+      subject.must_receive(:us_measurements!)
       subject.pounds!
-      subject.weight_unit.must == "LB"
     end
   end
 

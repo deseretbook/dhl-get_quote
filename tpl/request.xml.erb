@@ -27,8 +27,6 @@
             <IsDutiable><%= dutiable? ? "Y" : "N" %></IsDutiable>
             <% if special_services.size>0 -%>
                 <QtdShp>
-                    <GlobalProductCode>P</GlobalProductCode>
-            <LocalProductCode>P</LocalProductCode>
                     <% special_services.each do |special_service_type_code| -%>
                         <QtdShpExChrg>
                             <SpecialServiceType><%= special_service_type_code %></SpecialServiceType>

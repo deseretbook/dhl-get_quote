@@ -94,53 +94,74 @@ describe Dhl::GetQuote do
       end
 
       describe "kilograms!" do
-        before(:each) { klass.configure { |c| c.kilograms! } }
+        # silence deprication notices in tests
+        before(:each) { klass.stub!(:puts) }
 
-        it "must set class weight_unit to KG" do
-          klass.weight_unit.must == "KG"
-        end
-
-        it "Dhl::GetQuote::Request must honor this" do
-          valid_request.weight_unit.must == "KG"
+        it "must call #metric_measurements!" do
+          klass.must_receive(:metric_measurements!)
+          klass.kilograms!
         end
       end
 
       describe "pounds!" do
-        before(:each) { klass.configure { |c| c.pounds! } }
+        # silence deprication notices in tests
+        before(:each) { klass.stub!(:puts) }
 
-        it "must set class weight_unit to LB" do
-          klass.weight_unit.must == "LB"
-        end
-
-        it "Dhl::GetQuote::Request must honor this" do
-          valid_request.weight_unit.must == "LB"
+        it "must call #us_measurements!" do
+          klass.must_receive(:us_measurements!)
+          klass.pounds!
         end
       end
 
       describe "centimeters!" do
-        before(:each) { klass.configure { |c| c.centimeters! } }
+        # silence deprication notices in tests
+        before(:each) { klass.stub!(:puts) }
 
-        it "must set class weight_unit to CM" do
-          klass.dimensions_unit.must == "CM"
-        end
-
-        it "Dhl::GetQuote::Request must honor this" do
-          valid_request.dimensions_unit.must == "CM"
+        it "must call #metric_measurements!" do
+          klass.must_receive(:metric_measurements!)
+          klass.centimeters!
         end
       end
 
       describe "inches!" do
-        before(:each) { klass.configure { |c| c.inches! } }
+        # silence deprication notices in tests
+        before(:each) { klass.stub!(:puts) }
 
-        it "must set class weight_unit to IN" do
-          klass.dimensions_unit.must == "IN"
-        end
-
-        it "Dhl::GetQuote::Request must honor this" do
-          valid_request.dimensions_unit.must == "IN"
+        it "must call #us_measurements!" do
+          klass.must_receive(:us_measurements!)
+          klass.inches!
         end
       end
 
+      describe "us_measurements!" do
+        before(:each) { klass.metric_measurements! }
+        it "must set the weight and dimensions to LB and IN" do
+          klass.us_measurements!
+          klass.dimensions_unit.must == "IN"
+          klass.weight_unit.must == "LB"
+        end
+
+        it "Dhl::GetQuote::Request must honor this" do
+          klass.us_measurements!
+          valid_request.dimensions_unit.must == "IN"
+          valid_request.weight_unit.must == "LB"
+        end
+      end
+
+      describe "metric_measurements!" do
+        before(:each) { klass.us_measurements! }
+        it "must set the weight and dimensions to KG and CM" do
+          klass.metric_measurements!
+          klass.dimensions_unit.must == "CM"
+          klass.weight_unit.must == "KG"
+        end
+
+        it "Dhl::GetQuote::Request must honor this" do
+          klass.metric_measurements!
+          valid_request.dimensions_unit.must == "CM"
+          valid_request.weight_unit.must == "KG"
+        end
+      end
     end
   end
 
