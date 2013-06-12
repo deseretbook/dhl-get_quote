@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/deseretbook/dhl-get_quote.png)](https://travis-ci.org/deseretbook/dhl-get_quote)
+[![Code Climate](https://codeclimate.com/github/deseretbook/dhl-get_quote.png)](https://codeclimate.com/github/deseretbook/dhl-get_quote)
 
 # Dhl::GetQuote
 
