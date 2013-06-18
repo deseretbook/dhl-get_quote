@@ -72,10 +72,10 @@ describe Dhl::GetQuote::Piece do
       subject.to_xml.must == <<eos
 <Piece>
   <PieceID>1</PieceID>
-  <Height>1</Height>
-  <Depth>4</Depth>
-  <Width>3</Width>
-  <Weight>2</Weight>
+  <Height>1.0</Height>
+  <Depth>4.0</Depth>
+  <Width>3.0</Width>
+  <Weight>2.0</Weight>
 </Piece>
 eos
     end
@@ -85,7 +85,7 @@ eos
       dhl.to_xml.must == <<eos
 <Piece>
   <PieceID>1</PieceID>
-  <Weight>99</Weight>
+  <Weight>99.0</Weight>
 </Piece>
 eos
     end
@@ -96,7 +96,7 @@ eos
       dhl.to_xml.must == <<eos
 <Piece>
   <PieceID>88</PieceID>
-  <Weight>1</Weight>
+  <Weight>1.0</Weight>
 </Piece>
 eos
     end

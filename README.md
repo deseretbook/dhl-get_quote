@@ -42,10 +42,10 @@ Or install it yourself as:
   r.from('US', 84010)
 
   r.pieces << Dhl::GetQuote::Piece.new(
-    :height => 20,
-    :weight => 20,
-    :width => 20,
-    :depth => 19
+    :height => 20.0,
+    :weight => 20.0,
+    :width => 20.0,
+    :depth => 19.0
   )
 
   response = r.post
@@ -197,15 +197,15 @@ To add items to the shipping quote request, generate a new Dhl::GetQuote::Piece 
 
 ```ruby
   # minimal
-  request.pieces << Dhl::GetQuote::Piece.new( :weight => 20 )
+  request.pieces << Dhl::GetQuote::Piece.new( :weight => 20.0 )
 
   # more details
   request.pieces << Dhl::GetQuote::Piece.new(
-    :weight => 20, :height => 20, :width => 20, :depth => 19
+    :weight => 20.0, :height => 20.0, :width => 20.0, :depth => 19.0
   )
 ```
 
-Dhl::GetQuote::Piece requires *at least* :weight to be specified, and it must be a nonzero integer.  Optionally, you can provide :width, :depth and :height. The measurement options must all be added at once and cannot be added individually. They must be integers.
+Dhl::GetQuote::Piece requires *at least* :weight to be specified, and it must be a nonzero integer or float.  Optionally, you can provide :width, :depth and :height. The measurement options must all be added at once and cannot be added individually. They must be integers or floats.
 
 #### Posting to DHL
 

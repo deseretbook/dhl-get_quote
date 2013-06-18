@@ -3,7 +3,7 @@ class Dhl::GetQuote::Piece
 
   def initialize(options = {})
     [ :width, :height, :depth, :weight ].each do |i|
-      options[i] = options[i].to_i if !!options[i]
+      options[i] = options[i].to_f if !!options[i]
     end
 
     if options[:weight] && options[:weight] > 0
@@ -14,8 +14,8 @@ class Dhl::GetQuote::Piece
 
     if options[:width] || options[:height] || options[:depth]
       [ :width, :height, :depth ].each do |req|
-        if options[req].to_i > 0
-          instance_variable_set("@#{req}", options[req].to_i)
+        if options[req].to_f > 0.0
+          instance_variable_set("@#{req}", options[req].to_f)
         else
           raise Dhl::GetQuote::OptionsError, required_option_error_message(req)
         end
@@ -54,6 +54,6 @@ eos
 private
 
   def required_option_error_message(field)
-    ":#{field} is a required for Dhl::GetQuote::Piece. Must be nonzero integer."
+    ":#{field} is a required for Dhl::GetQuote::Piece. Must be nonzero integer or float."
   end
 end

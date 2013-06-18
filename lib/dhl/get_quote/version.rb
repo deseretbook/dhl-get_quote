@@ -1,6 +1,6 @@
 class Dhl
   class GetQuote
-    VERSION = "0.5.1"
+    VERSION = "0.5.2"
 
     PostInstallMessage = <<EOS
 
@@ -12,6 +12,10 @@ This version introduces the following changes from 0.4.x:
   Please use #us_measurements! or #metric_measurements!.
 
 * dutiable() replaces dutiable! now requires arguments (dutiable value and currency).
+
+This version introduces the following changes from 0.5.1:
+
+* Product.new() can accept weights and measures as float as well as by integer.
 
 EOS
   end
