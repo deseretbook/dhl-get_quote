@@ -591,7 +591,6 @@ eos
     end
   end
 
-
   describe "#ready_date" do
     after(:each) do
       Timecop.return
@@ -605,18 +604,34 @@ eos
 
     context 'the date is friday' do
       context 'the time is before 5pm' do
-        it 'should return todays date' do
+        it 'must return todays date' do
           Timecop.freeze(Time.local(2013, 5, 31, 10, 4, 0))
 
           subject.ready_date.must == '2013-05-31'
         end
       end
       context 'the time is after 5pm' do
-        it 'should return todays date' do
+        it 'must return next monday' do
           Timecop.freeze(Time.local(2013, 5, 31, 19, 4, 0))
 
           subject.ready_date.must == '2013-06-03'
         end
+      end
+    end
+
+    context 'the date is saturday' do
+      it "must return the next monday" do
+        Timecop.freeze(Time.local(2013, 7, 6, 10, 4, 0))
+
+        subject.ready_date.must == '2013-07-08'
+      end
+    end
+
+    context 'the date is sunday' do
+      it "must return the next monday" do
+        Timecop.freeze(Time.local(2013, 7, 7, 10, 4, 0))
+
+        subject.ready_date.must == '2013-07-08'
       end
     end
   end

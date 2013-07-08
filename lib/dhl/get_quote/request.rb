@@ -164,8 +164,8 @@ class Dhl::GetQuote::Request
   # ready dates are only mon-fri
   def ready_date(t=Time.now)
     date = Date.parse(t.to_s)
-    if date.wday >= 5 && t.hour >= 17
-      date.send(:next_day, (8-date.wday))
+    if (date.cwday >= 6) || (date.wday >= 5 && t.hour >= 17)
+      date.send(:next_day, 8-date.cwday)
     else
       date
     end.strftime("%Y-%m-%d")
