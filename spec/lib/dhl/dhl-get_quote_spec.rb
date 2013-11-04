@@ -22,11 +22,13 @@ describe Dhl::GetQuote do
   describe ".configure" do
 
     it "must accept and execute a block" do
-      lambda do
-        klass.configure do
-          raise RuntimeError, "Testing"
+      expect(
+        lambda do
+          klass.configure do
+            raise RuntimeError, "Testing"
+          end
         end
-      end.must raise_exception RuntimeError
+      ).to raise_exception(RuntimeError)
     end
 
     context "configure() block" do
@@ -37,12 +39,12 @@ describe Dhl::GetQuote do
         end
 
         it "must set the class test_mode? to true" do
-          klass.test_mode?.must be_true
+          expect(klass.test_mode?).to be_true
         end
 
         it "Dhl::GetQuote::Request must honor this test mode" do
           request = Dhl::GetQuote::Request.new(valid_request_options)
-          request.test_mode?.must be_true
+          expect(request.test_mode?).to be_true
         end
       end
 
@@ -52,12 +54,12 @@ describe Dhl::GetQuote do
         end
 
         it "must set the classvar test_mode to false" do
-          klass.test_mode?.must be_false
+          expect(klass.test_mode?).to be_false
         end
 
         it "Dhl::GetQuote::Request must honor this test mode" do
           request = Dhl::GetQuote::Request.new(valid_request_options)
-          request.test_mode?.must be_false
+          expect(request.test_mode?).to be_false
         end
       end
 
@@ -85,7 +87,7 @@ describe Dhl::GetQuote do
         before(:each) { klass.configure { |c| c.password "ppaasswwoorrdd" } }
 
         it "must set class password to passed string" do
-          expect(klass.password.must).to eq("ppaasswwoorrdd")
+          expect(klass.password).to eq("ppaasswwoorrdd")
         end
 
         it "Dhl::GetQuote::Request must honor this" do
@@ -99,9 +101,10 @@ describe Dhl::GetQuote do
 
       describe "kilograms!" do
         # silence deprication notices in tests
-        before(:each) { klass.stub!(:puts) }
+        before(:each) { klass.stub(:puts) }
 
         it "must call #metric_measurements!" do
+          # expect(klass).to receive(:metric_measurements!)
           klass.must_receive(:metric_measurements!)
           klass.kilograms!
         end
@@ -109,9 +112,10 @@ describe Dhl::GetQuote do
 
       describe "pounds!" do
         # silence deprication notices in tests
-        before(:each) { klass.stub!(:puts) }
+        before(:each) { klass.stub(:puts) }
 
         it "must call #us_measurements!" do
+          # expect(klass).to receive(:us_measurements!)
           klass.must_receive(:us_measurements!)
           klass.pounds!
         end
@@ -119,9 +123,10 @@ describe Dhl::GetQuote do
 
       describe "centimeters!" do
         # silence deprication notices in tests
-        before(:each) { klass.stub!(:puts) }
+        before(:each) { klass.stub(:puts) }
 
         it "must call #metric_measurements!" do
+          # expect(klass).to receive(:metric_measurements!)
           klass.must_receive(:metric_measurements!)
           klass.centimeters!
         end
@@ -129,9 +134,10 @@ describe Dhl::GetQuote do
 
       describe "inches!" do
         # silence deprication notices in tests
-        before(:each) { klass.stub!(:puts) }
+        before(:each) { klass.stub(:puts) }
 
         it "must call #us_measurements!" do
+          # expect(klass).to receive(:us_measurements!)
           klass.must_receive(:us_measurements!)
           klass.inches!
         end
@@ -164,6 +170,41 @@ describe Dhl::GetQuote do
           klass.metric_measurements!
           expect(valid_request.dimensions_unit).to eq("CM")
           expect(valid_request.weight_unit).to eq("KG")
+        end
+      end
+
+      describe "set_logger" do
+        describe "it sets the logging method" do
+          let(:logger_proc) do
+            Proc.new do |msg|
+              puts msg
+            end
+          end
+
+          it "must accept an argument" do
+            klass.set_logger(logger_proc)
+            expect(klass.logger).to eq(logger_proc)
+          end
+
+          it "must accept a block" do
+            klass.set_logger do
+              :foo
+            end
+            expect(klass.logger).to eq( Proc.new { :foo } )
+          end
+
+          it "if both argument and block are given, it uses the block" do
+            klass.set_logger(logger_proc) do
+              :foo
+            end
+            expect(klass.logger).to eq( Proc.new { :foo } )
+          end
+
+          it "if called without either it uses self.default_logger" do
+            # expect(klass).to receive(:default_logger).at_least(:once).and_return(logger_proc)
+            klass.must_receive(:default_logger).at_least(:once).and_return(logger_proc)
+            klass.set_logger
+          end
         end
       end
     end

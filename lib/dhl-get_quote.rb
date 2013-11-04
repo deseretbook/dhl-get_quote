@@ -93,9 +93,25 @@ class Dhl
       @@dimensions_unit = DIMENSIONS_UNIT_CODES[:centimeters]
       @@dutiable = false
       @@test_mode = false
+
+      @@logger = self.default_logger
+    end
+
+    def self.set_logger(logger_proc=nil, &block)
+      @@logger = block || logger_proc || default_logger
+    end
+
+    def self.logger
+      @@logger
     end
 
     private
+
+    def self.default_logger
+      Proc.new do |message|
+        STDERR.puts "Dhl-get_quote gem: #{message}"
+      end
+    end
 
     def self.deprication_notice(meth, m)
       messages = {

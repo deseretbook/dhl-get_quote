@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rake', '~>10.0.4'
   gem.add_development_dependency 'rake', '10.0.4'
+  # gem.add_development_dependency 'rspec', '2.14.1'
   gem.add_development_dependency 'rspec', '2.13.0'
   gem.add_development_dependency 'rspec-must', '0.0.1'
   gem.add_development_dependency 'timecop', '~> 0.6.1'
