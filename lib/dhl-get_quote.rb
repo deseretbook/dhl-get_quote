@@ -141,7 +141,7 @@ class Dhl
         else
           "\n" + lines.map{|l| "\t#{l}"}.join("\n")
         end
-        puts "#{ll.to_s.upcase}: Dhl-get_quote gem: #{output}"
+        STDERR.puts "#{ll.to_s.upcase}: Dhl-get_quote gem: #{output}"
       end
     end
 

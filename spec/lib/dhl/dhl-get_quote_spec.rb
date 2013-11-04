@@ -258,9 +258,14 @@ describe Dhl::GetQuote do
 
           klass.log("foo", :debug)
         end
-
       end
 
+      describe "default_logger" do
+        it "should print log messages to STDERR" do
+          STDERR.should_receive(:puts).with("Y: Dhl-get_quote gem: x")
+          klass.default_logger.call('x', 'y')
+        end
+      end
     end
   end
 
