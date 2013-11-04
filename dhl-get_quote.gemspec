@@ -20,12 +20,11 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'httparty', '~>0.10.2'
   gem.add_dependency 'multi_xml', '~>0.5.3'
 
-  gem.add_development_dependency 'rake', '~>10.0.4'
   gem.add_development_dependency 'rake', '10.0.4'
   # gem.add_development_dependency 'rspec', '2.14.1'
   gem.add_development_dependency 'rspec', '2.13.0'
   gem.add_development_dependency 'rspec-must', '0.0.1'
-  gem.add_development_dependency 'timecop', '~> 0.6.1'
+  gem.add_development_dependency 'timecop', '0.6.1'
   # gem.add_development_dependency 'debugger'
 
   if Dhl::GetQuote::PostInstallMessage
