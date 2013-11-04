@@ -65,7 +65,9 @@ describe Dhl::GetQuote do
         before(:each) { klass.configure { |c| c.site_id "SomethingHere" } }
 
         it "must set class site_id to passed string" do
-          klass.site_id.must == "SomethingHere"
+          expect(
+            klass.site_id
+          ).to eq("SomethingHere")
         end
 
         it "Dhl::GetQuote::Request must honor this" do
@@ -73,7 +75,9 @@ describe Dhl::GetQuote do
             :password => 'xxx'
           )
 
-          request.instance_variable_get(:@site_id).must == "SomethingHere"
+          expect(
+            request.instance_variable_get(:@site_id)
+          ).to eq("SomethingHere")
         end
       end
 
@@ -81,7 +85,7 @@ describe Dhl::GetQuote do
         before(:each) { klass.configure { |c| c.password "ppaasswwoorrdd" } }
 
         it "must set class password to passed string" do
-          klass.password.must == "ppaasswwoorrdd"
+          expect(klass.password.must).to eq("ppaasswwoorrdd")
         end
 
         it "Dhl::GetQuote::Request must honor this" do
@@ -89,7 +93,7 @@ describe Dhl::GetQuote do
             :site_id => 'ASiteId'
           )
 
-          request.instance_variable_get(:@password).must == "ppaasswwoorrdd"
+          expect(request.instance_variable_get(:@password)).to eq("ppaasswwoorrdd")
         end
       end
 
@@ -137,14 +141,14 @@ describe Dhl::GetQuote do
         before(:each) { klass.metric_measurements! }
         it "must set the weight and dimensions to LB and IN" do
           klass.us_measurements!
-          klass.dimensions_unit.must == "IN"
-          klass.weight_unit.must == "LB"
+          expect(klass.dimensions_unit).to eq("IN")
+          expect(klass.weight_unit).to eq("LB")
         end
 
         it "Dhl::GetQuote::Request must honor this" do
           klass.us_measurements!
-          valid_request.dimensions_unit.must == "IN"
-          valid_request.weight_unit.must == "LB"
+          expect(valid_request.dimensions_unit).to eq("IN")
+          expect(valid_request.weight_unit).to eq("LB")
         end
       end
 
@@ -152,14 +156,14 @@ describe Dhl::GetQuote do
         before(:each) { klass.us_measurements! }
         it "must set the weight and dimensions to KG and CM" do
           klass.metric_measurements!
-          klass.dimensions_unit.must == "CM"
-          klass.weight_unit.must == "KG"
+          expect(klass.dimensions_unit).to eq("CM")
+          expect(klass.weight_unit).to eq("KG")
         end
 
         it "Dhl::GetQuote::Request must honor this" do
           klass.metric_measurements!
-          valid_request.dimensions_unit.must == "CM"
-          valid_request.weight_unit.must == "KG"
+          expect(valid_request.dimensions_unit).to eq("CM")
+          expect(valid_request.weight_unit).to eq("KG")
         end
       end
     end
