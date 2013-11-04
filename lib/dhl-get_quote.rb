@@ -14,7 +14,7 @@ class Dhl
     DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
     WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
     LOG_LEVELS = [:info, :critical, :debug, :none]
-    DEFAULT_LOG_LEVEL = :info
+    DEFAULT_LOG_LEVEL = :critical
 
     def self.configure(&block)
       yield self if block_given?

@@ -328,6 +328,53 @@ The #name() method will return the name for a given service. It will work on bot
 
 ---
 
+### Setting a logger and log levels
+
+By default the gem will only log output of fatal errors that occur when communicating with the DHL servers. If such an error is caught, the gem will log the exception name, the request XML (if generated) and the response xml (if received).
+
+To change the log level:
+
+```ruby
+  Dhl::GetQuote::configure do |c|
+    c.set_log_level :info
+  end
+
+  # or
+
+  Dhl::GetQuote::set_log_level :info
+```
+
+Available log levels are:
+
+  :none      Logs nothing
+  :critical  Logs fatal exceptions (DEFAULT)
+  :info      Log :critical, also logs internal validation errors
+
+
+The default logger is STDERR. You can change this by passing a Proc object to set_logger(). For example, if you wanted to log to the Rails Logger instead:
+
+```ruby
+  # with a block
+  Dhl::GetQuote::set_logger do
+    Proc.new do |message|
+      Rails.logger.info(message)
+    end
+  end
+
+  # as an argument
+  logger = Proc.new { |message| Rails.logger.info(message) }
+  Dhl::GetQuote::set_logger(logger)
+
+  # you can also do this is the configure block:
+    Dhl::GetQuote::configure do |c|
+    c.set_logger( Proc.new { |message| Rails.logger.info(message) } )
+  end
+```
+
+Log level CAN NOT be set via "Dhl::GetQuote::new()" options.
+
+---
+
 ### Initializers with Dhl::GetQuote
 
 If you don't want to have to pass email, password, weight setting, etc, every time you build a new request object you can set these defaults beforehand. This works well in cases where you want to put setting in something like a Rails initializer.
