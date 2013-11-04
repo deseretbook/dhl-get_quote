@@ -1,10 +1,15 @@
 class Dhl
   class GetQuote
-    VERSION = "0.5.3"
+    VERSION = "0.5.4"
 
     PostInstallMessage = <<EOS
 
 *** NOTE Dhl-GetQuote ***
+
+This version introduces the following changes from 0.5.3:
+
+* Logging of request and response in the event of an error
+* Logging levels and logging method can be set
 
 This version introduces the following changes from 0.4.x:
 

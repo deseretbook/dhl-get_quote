@@ -209,8 +209,8 @@ describe Dhl::GetQuote do
       end
 
       describe "set_log_level" do
-        it "allows log level to be set as :none, :info and :debug" do
-          [:none, :info, :critical, :debug].each do |level|
+        it "allows log level to be set as :none, :critical, :verbose and :debug" do
+          [:none, :critical, :verbose, :debug].each do |level|
             klass.set_log_level level
             expect(klass.log_level).to eq(level)
           end
@@ -224,7 +224,7 @@ describe Dhl::GetQuote do
       end
 
       describe "log" do
-        let(:logger_proc) { Proc.new {|m|puts m} }
+        let(:logger_proc) { Proc.new {|m,l|puts m} }
         before(:each) do
           klass.set_logger logger_proc
         end
@@ -233,20 +233,20 @@ describe Dhl::GetQuote do
 
           logger_proc.should_not_receive(:call)
 
-          klass.log("foo", :info)
+          klass.log("foo", :verbose)
         end
         it "should log message if log level of the message is equal to log_level()" do
 
           klass.set_log_level(:critical)
 
-          logger_proc.should_receive(:call).with("foo")
+          logger_proc.should_receive(:call).with("foo", :critical)
 
           klass.log("foo", :critical)
         end
         it "should log message if log level of the message is greater than log_level()" do
-          klass.set_log_level(:info)
+          klass.set_log_level(:verbose)
 
-          logger_proc.should_receive(:call).with("foo")
+          logger_proc.should_receive(:call).with("foo", :critical)
 
           klass.log("foo", :critical)
         end

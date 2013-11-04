@@ -13,7 +13,7 @@ class Dhl
 
     DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
     WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
-    LOG_LEVELS = [:info, :critical, :debug, :none]
+    LOG_LEVELS = [:debug, :verbose, :critical, :none]
     DEFAULT_LOG_LEVEL = :critical
 
     def self.configure(&block)
@@ -103,7 +103,7 @@ class Dhl
     def self.log(message, level = DEFAULT_LOG_LEVEL)
       validate_log_level!(level)
       return unless LOG_LEVELS.index(level.to_sym) >= LOG_LEVELS.index(log_level)
-      get_logger.call(message)
+      get_logger.call(message, level)
     end
 
     def self.set_logger(logger_proc=nil, &block)
@@ -135,8 +135,8 @@ class Dhl
     end
 
     def self.default_logger
-      Proc.new do |message|
-        STDERR.puts "Dhl-get_quote gem: #{message}"
+      Proc.new do |message, log_level|
+        STDERR.puts "#{log_level.upcase}: Dhl-get_quote gem: #{message}"
       end
     end
 

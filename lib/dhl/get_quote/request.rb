@@ -185,7 +185,7 @@ class Dhl::GetQuote::Request
       '<not generated at time of error>'
     end
 
-    response_body = if (response && response.body.to_s.size > 0)
+    response_body = if (response && response.body && response.body.to_s.size > 0)
       response.body
     else
       '<not received at time of error>'

@@ -516,7 +516,30 @@ eos
         )
       end
 
-      describe "log the exception and xml" do
+      context "validation error" do
+        let(:exception) do
+          Dhl::GetQuote::OptionsError.new(":password is a required option")
+        end
+
+        before(:each) do
+          Dhl::GetQuote::Response.stub(:new).and_raise(exception)
+          subject.unstub(:log_request_and_response_xml)
+        end
+
+        after(:each) do
+          expect( lambda { subject.post } ).to raise_exception
+        end
+
+        it "should log with the correct log level of :verbose" do
+          Dhl::GetQuote.set_log_level(Dhl::GetQuote::DEFAULT_LOG_LEVEL)
+
+          subject.should_receive(:log_exception).with(
+            exception, exception.log_level
+          )
+        end
+      end
+
+      context ":critical error" do
         before(:each) do
           subject.unstub(:log_request_and_response_xml)
         end

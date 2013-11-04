@@ -336,38 +336,40 @@ To change the log level:
 
 ```ruby
   Dhl::GetQuote::configure do |c|
-    c.set_log_level :info
+    c.set_log_level :verbose
   end
 
   # or
 
-  Dhl::GetQuote::set_log_level :info
+  Dhl::GetQuote::set_log_level :verbose
 ```
 
 Available log levels are:
 
   :none      Logs nothing
   :critical  Logs fatal exceptions (DEFAULT)
-  :info      Log :critical, also logs internal validation errors
-
+  :verbose   Log :critical, also logs internal validation errors
+  :debug     Log everything
 
 The default logger is STDERR. You can change this by passing a Proc object to set_logger(). For example, if you wanted to log to the Rails Logger instead:
 
 ```ruby
   # with a block
   Dhl::GetQuote::set_logger do
-    Proc.new do |message|
+    Proc.new do |message, log_level|
       Rails.logger.info(message)
     end
   end
 
   # as an argument
-  logger = Proc.new { |message| Rails.logger.info(message) }
+  logger = Proc.new { |message, log_level| Rails.logger.info(message) }
   Dhl::GetQuote::set_logger(logger)
 
   # you can also do this is the configure block:
     Dhl::GetQuote::configure do |c|
-    c.set_logger( Proc.new { |message| Rails.logger.info(message) } )
+    c.set_logger(
+      Proc.new { |message, log_level| Rails.logger.info(message) }
+    )
   end
 ```
 
