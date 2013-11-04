@@ -149,7 +149,7 @@ class Dhl::GetQuote::Request
 
   def to_xml
     validate!
-    ERB.new(File.new(xml_template_path).read, nil,'%<>-').result(binding)
+    @to_xml = ERB.new(File.new(xml_template_path).read, nil,'%<>-').result(binding)
   end
 
   # ready times are only 8a-5p(17h)
@@ -172,13 +172,33 @@ class Dhl::GetQuote::Request
   end
 
   def post
-    validate!
     response = HTTParty.post(servlet_url,
       :body => to_xml,
       :headers => { 'Content-Type' => 'application/xml' }
     ).response
 
-    Dhl::GetQuote::Response.new(response.body)
+    return Dhl::GetQuote::Response.new(response.body)
+  rescue Exception => e
+    request_xml = if @to_xml.to_s.size>0
+      @to_xml
+    else
+      '<not generated at time of error>'
+    end
+
+    response_body = if (response && response.body.to_s.size > 0)
+      response.body
+    else
+      '<not received at time of error>'
+    end
+
+    log_level = if e.respond_to?(:log_level)
+      e.log_level
+    else
+      :critical
+    end
+
+    log_request_and_response_xml(log_level, e, request_xml, response_body )
+    raise e
   end
 
   def special_services
@@ -237,4 +257,27 @@ private
     }
     puts "!!!! Method \"##{meth}()\" is depricated. #{messages[m.to_sym]}."
   end
+
+  def log_request_and_response_xml(level, exception, request_xml, response_xml)
+    log_exception(exception, level)
+    log_request_xml(request_xml, level)
+    log_response_xml(response_xml, level)
+  end
+
+  def log_exception(exception, level)
+    log("Exception: #{exception}", level)
+  end
+
+  def log_request_xml(xml, level)
+    log("Request XML: #{xml}", level)
+  end
+
+  def log_response_xml(xml, level)
+    log("Response XML: #{xml}", level)
+  end
+
+  def log(msg, level)
+    Dhl::GetQuote.log(msg, level)
+  end
+
 end

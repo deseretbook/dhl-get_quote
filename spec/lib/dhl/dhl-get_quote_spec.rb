@@ -183,21 +183,21 @@ describe Dhl::GetQuote do
 
           it "must accept an argument" do
             klass.set_logger(logger_proc)
-            expect(klass.logger).to eq(logger_proc)
+            expect(klass.get_logger).to eq(logger_proc)
           end
 
           it "must accept a block" do
             klass.set_logger do
               :foo
             end
-            expect(klass.logger).to eq( Proc.new { :foo } )
+            expect(klass.get_logger).to eq( Proc.new { :foo } )
           end
 
           it "if both argument and block are given, it uses the block" do
             klass.set_logger(logger_proc) do
               :foo
             end
-            expect(klass.logger).to eq( Proc.new { :foo } )
+            expect(klass.get_logger).to eq( Proc.new { :foo } )
           end
 
           it "if called without either it uses self.default_logger" do
@@ -210,7 +210,7 @@ describe Dhl::GetQuote do
 
       describe "set_log_level" do
         it "allows log level to be set as :none, :info and :debug" do
-          [:none, :info, :debug].each do |level|
+          [:none, :info, :critical, :debug].each do |level|
             klass.set_log_level level
             expect(klass.log_level).to eq(level)
           end

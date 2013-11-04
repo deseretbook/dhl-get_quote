@@ -13,7 +13,8 @@ class Dhl
 
     DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
     WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
-    LOG_LEVELS = [:none, :info, :debug]
+    LOG_LEVELS = [:none, :info, :critical, :debug]
+    DEFAULT_LOG_LEVEL = :info
 
     def self.configure(&block)
       yield self if block_given?
@@ -98,11 +99,15 @@ class Dhl
       @@logger = self.default_logger
     end
 
+    def self.log(message, level = DEFAULT_LOG_LEVEL)
+      get_logger.call(message)
+    end
+
     def self.set_logger(logger_proc=nil, &block)
       @@logger = block || logger_proc || default_logger
     end
 
-    def self.logger
+    def self.get_logger
       @@logger
     end
 

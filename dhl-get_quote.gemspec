@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '2.13.0'
   gem.add_development_dependency 'rspec-must', '0.0.1'
   gem.add_development_dependency 'timecop', '0.6.1'
-  # gem.add_development_dependency 'debugger'
+  gem.add_development_dependency 'debugger'
 
   if Dhl::GetQuote::PostInstallMessage
     gem.post_install_message = Dhl::GetQuote::PostInstallMessage

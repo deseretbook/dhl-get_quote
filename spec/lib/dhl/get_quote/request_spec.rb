@@ -360,6 +360,12 @@ describe Dhl::GetQuote::Request do
     # gsub here removes leading whitespace which may be variable.
     let(:xml_output) { subject.to_xml.gsub(/^\s+/, '') }
 
+    it "must validate the object" do
+      subject.must_receive(:validate!)
+
+      subject.to_xml
+    end
+
     it "must return an XML version of the object including Pieces" do
 
       subject.pieces << mock_piece
@@ -455,12 +461,9 @@ eos
         mock(:httparty, :response => mock_httparty_response)
       )
       Dhl::GetQuote::Response.stub!(:new).and_return(mock_response_object)
-    end
-
-    it "must validate the object" do
-      subject.must_receive(:validate!)
-
-      subject.post
+      
+      # to be unstubbed later
+      subject.stub(:log_request_and_response_xml)
     end
 
     it "must post to server" do
@@ -477,6 +480,87 @@ eos
 
     it "must return a new Response object" do
       subject.post.must == mock_response_object
+    end
+
+    context "there is an exception" do
+      
+      let(:exception) do
+        NoMethodError.new("undefined method `detect' for nil:NilClass")
+      end
+
+      before(:each) do
+        Dhl::GetQuote::Response.stub(:new).and_raise(exception)
+        Dhl::GetQuote.stub(:log) # silence log output for this test
+      end
+
+      it "must log the request and response if there is any exception" do
+        subject.unstub(:log_request_and_response_xml)
+        # expect(subject).to receive(
+        #   :log_request_and_response_xml
+        # ).exactly(:once)
+        subject.should_receive(
+          :log_request_and_response_xml
+        ).exactly(:once)
+
+        # unless wrapped in an expect, the exception is swallowed!
+        expect(
+          lambda { subject.post }
+        ).to raise_exception
+      end
+
+      it "must re-raise any exceptions" do
+        expect(
+          lambda { subject.post }
+        ).to raise_exception(
+          exception
+        )
+      end
+
+      describe "log the exception and xml" do
+        before(:each) do
+          subject.unstub(:log_request_and_response_xml)
+        end
+
+        after(:each) do
+          expect( lambda { subject.post } ).to raise_exception
+        end
+
+        it "must log exception name" do  
+          subject.should_receive(:log_exception).with(
+            exception, :critical
+          )
+        end
+
+        it "must log the request xml" do
+          subject.instance_variable_set(:@to_xml, 'this is request')
+
+          subject.should_receive(:log_request_xml).with(
+            "this is request", :critical
+          )
+        end
+
+        it "must log the a note if no request xml has been generated yet" do
+          subject.should_receive(:log_request_xml).with(
+            "<not generated at time of error>", :critical
+          )
+        end
+
+        it "must log the response body" do
+          mock_httparty_response.stub(:body).and_return(
+            'this is the body'
+          )
+
+          subject.should_receive(:log_response_xml).with(
+            "this is the body", :critical
+          )
+        end
+
+        it "must log the a note if no response xml has been received yet" do
+          subject.should_receive(:log_response_xml).with(
+            "<not received at time of error>", :critical
+          )
+        end
+      end
     end
 
   end
