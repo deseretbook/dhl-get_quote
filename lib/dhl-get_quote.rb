@@ -13,7 +13,7 @@ class Dhl
 
     DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
     WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
-    LOG_LEVELS = [:none, :info, :critical, :debug]
+    LOG_LEVELS = [:info, :critical, :debug, :none]
     DEFAULT_LOG_LEVEL = :info
 
     def self.configure(&block)
@@ -97,9 +97,12 @@ class Dhl
       @@test_mode = false
 
       @@logger = self.default_logger
+      @@log_level = DEFAULT_LOG_LEVEL
     end
 
     def self.log(message, level = DEFAULT_LOG_LEVEL)
+      validate_log_level!(level)
+      return unless LOG_LEVELS.index(level.to_sym) >= LOG_LEVELS.index(log_level)
       get_logger.call(message)
     end
 
@@ -112,11 +115,8 @@ class Dhl
     end
 
     def self.set_log_level(log_level)
-      if LOG_LEVELS.include?(log_level.to_sym)
-        @@log_level = log_level
-      else
-        raise "Log level :#{log_level} is not valid"
-      end
+      validate_log_level!(log_level)
+      @@log_level = log_level
     end
 
     def self.log_level
@@ -124,6 +124,15 @@ class Dhl
     end
 
     private
+
+    def self.validate_log_level!(level)
+      raise "Log level :#{level} is not valid" unless
+        valid_log_level?(level)
+    end
+
+    def self.valid_log_level?(level)
+      LOG_LEVELS.include?(level.to_sym)
+    end
 
     def self.default_logger
       Proc.new do |message|

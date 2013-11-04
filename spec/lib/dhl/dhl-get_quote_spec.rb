@@ -223,6 +223,43 @@ describe Dhl::GetQuote do
         end
       end
 
+      describe "log" do
+        let(:logger_proc) { Proc.new {|m|puts m} }
+        before(:each) do
+          klass.set_logger logger_proc
+        end
+        it "should not log message if log level of the message is lower than log_level()" do
+          klass.set_log_level(:critical)
+
+          logger_proc.should_not_receive(:call)
+
+          klass.log("foo", :info)
+        end
+        it "should log message if log level of the message is equal to log_level()" do
+
+          klass.set_log_level(:critical)
+
+          logger_proc.should_receive(:call).with("foo")
+
+          klass.log("foo", :critical)
+        end
+        it "should log message if log level of the message is greater than log_level()" do
+          klass.set_log_level(:info)
+
+          logger_proc.should_receive(:call).with("foo")
+
+          klass.log("foo", :critical)
+        end
+
+        it "should never log when log level is :none" do
+          klass.set_log_level(:none)
+
+          logger_proc.should_not_receive(:call)
+
+          klass.log("foo", :debug)
+        end
+
+      end
 
     end
   end
