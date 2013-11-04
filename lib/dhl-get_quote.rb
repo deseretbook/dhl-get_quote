@@ -135,8 +135,13 @@ class Dhl
     end
 
     def self.default_logger
-      Proc.new do |message, log_level|
-        STDERR.puts "#{log_level.upcase}: Dhl-get_quote gem: #{message}"
+      @default_logger ||= Proc.new do |m, ll|
+        output = if (lines = m.split("\n")).size < 2
+          m
+        else
+          "\n" + lines.map{|l| "\t#{l}"}.join("\n")
+        end
+        puts "#{ll.to_s.upcase}: Dhl-get_quote gem: #{output}"
       end
     end
 
