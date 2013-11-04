@@ -512,7 +512,7 @@ eos
         expect(
           lambda { subject.post }
         ).to raise_exception(
-          exception
+          exception.class
         )
       end
 

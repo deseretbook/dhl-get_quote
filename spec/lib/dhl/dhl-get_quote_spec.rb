@@ -174,11 +174,11 @@ describe Dhl::GetQuote do
       end
 
       describe "set_logger" do
+        # note: we test on what the logger proc DOES, not by what it IS
+        # because in 1.8.7, Proc objects can't be compared accurately with ==.
         describe "it sets the logging method" do
           let(:logger_proc) do
-            Proc.new do |msg|
-              puts msg
-            end
+            Proc.new { |msg,ll| puts msg }
           end
 
           it "must accept an argument" do
@@ -190,14 +190,14 @@ describe Dhl::GetQuote do
             klass.set_logger do
               :foo
             end
-            expect(klass.get_logger).to eq( Proc.new { :foo } )
+            expect(klass.get_logger.call).to eq( :foo )
           end
 
           it "if both argument and block are given, it uses the block" do
             klass.set_logger(logger_proc) do
-              :foo
+              :bar
             end
-            expect(klass.get_logger).to eq( Proc.new { :foo } )
+            expect(klass.get_logger.call).to eq( :bar )
           end
 
           it "if called without either it uses self.default_logger" do
