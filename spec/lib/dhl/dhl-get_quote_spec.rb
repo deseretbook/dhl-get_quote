@@ -207,6 +207,23 @@ describe Dhl::GetQuote do
           end
         end
       end
+
+      describe "set_log_level" do
+        it "allows log level to be set as :none, :info and :debug" do
+          [:none, :info, :debug].each do |level|
+            klass.set_log_level level
+            expect(klass.log_level).to eq(level)
+          end
+        end
+
+        it "throws an error if an incorrect log level is given" do
+          expect(
+            lambda { klass.set_log_level :wrong }
+          ).to raise_exception(RuntimeError, "Log level :wrong is not valid")
+        end
+      end
+
+
     end
   end
 

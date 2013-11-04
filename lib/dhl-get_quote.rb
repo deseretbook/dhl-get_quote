@@ -13,6 +13,7 @@ class Dhl
 
     DIMENSIONS_UNIT_CODES = { :centimeters => "CM", :inches => "IN" }
     WEIGHT_UNIT_CODES = { :kilograms => "KG", :pounds => "LB" }
+    LOG_LEVELS = [:none, :info, :debug]
 
     def self.configure(&block)
       yield self if block_given?
@@ -103,6 +104,18 @@ class Dhl
 
     def self.logger
       @@logger
+    end
+
+    def self.set_log_level(log_level)
+      if LOG_LEVELS.include?(log_level.to_sym)
+        @@log_level = log_level
+      else
+        raise "Log level :#{log_level} is not valid"
+      end
+    end
+
+    def self.log_level
+      @@log_level
     end
 
     private
