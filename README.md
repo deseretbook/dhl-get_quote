@@ -355,10 +355,8 @@ The default logger is STDERR. You can change this by passing a Proc object to se
 
 ```ruby
   # with a block
-  Dhl::GetQuote::set_logger do
-    Proc.new do |message, log_level|
-      Rails.logger.info(message)
-    end
+  Dhl::GetQuote::set_logger do |message, log_level|
+    Rails.logger.info(message)
   end
 
   # as an argument
@@ -366,10 +364,14 @@ The default logger is STDERR. You can change this by passing a Proc object to se
   Dhl::GetQuote::set_logger(logger)
 
   # you can also do this is the configure block:
-    Dhl::GetQuote::configure do |c|
+  Dhl::GetQuote::configure do |c|
     c.set_logger(
       Proc.new { |message, log_level| Rails.logger.info(message) }
     )
+    # or as a block here too
+    c.set_logger do |message, log_level|
+      Rails.logger.info(message)
+    end
   end
 ```
 
