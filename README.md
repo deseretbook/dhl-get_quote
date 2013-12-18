@@ -50,9 +50,9 @@ Or install it yourself as:
 
   response = r.post
   if response.error?
-    raise "There was an error: #{resp.raw_xml}"
+    raise "There was an error: #{response.raw_xml}"
   else
-    puts "Your cost to ship will be: #{resp.total_amount} in #{resp.currency_code}."
+    puts "Your cost to ship will be: #{response.total_amount} in #{response.currency_code}."
   end
 ```
 
